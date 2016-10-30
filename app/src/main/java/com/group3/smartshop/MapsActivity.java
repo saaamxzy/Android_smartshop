@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -23,6 +24,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // To check if the apiclient has been initialized
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
                     .addConnectionCallbacks(this)
@@ -71,5 +73,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng ucsd = new LatLng(32.8801, -117.2340);
         mMap.addMarker(new MarkerOptions().position(ucsd).title("Our Campus"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(ucsd));
+        //TODO: request for permission
+        //mMap.setMyLocationEnabled(true);
     }
 }
