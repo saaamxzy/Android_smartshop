@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">SmartShop</string>
     <string name="title_activity_maps">Map</string>
-    <string name="edit_message">Enter a message</string>
-    <string name="button_send">Send</string>
+    <string name="edit_message">What product are you looking for?</string>
+    <string name="button_online">ONLINE</string>
+    <string name="button_nearby">NEARBY</string>
 </resources>
