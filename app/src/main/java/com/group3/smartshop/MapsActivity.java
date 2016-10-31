@@ -1,7 +1,12 @@
 package com.group3.smartshop;
 
+import android.*;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -16,7 +21,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
-
+    private static final int PERMISSIONS_REQUEST_FINE_LOCATION = 1;
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
 
@@ -24,6 +29,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mMap.setMyLocationEnabled(true);
+        } else {
+            // Show rationale and request permission.
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_CONTACTS},
+                        PERMISSIONS_REQUEST_FINE_LOCATION);
+
+                // PERMISSIONS_REQUEST_FINE_LOCATION is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+            }
+
+        }
         // To check if the apiclient has been initialized
         if (mGoogleApiClient == null) {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -73,7 +106,37 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng ucsd = new LatLng(32.8801, -117.2340);
         mMap.addMarker(new MarkerOptions().position(ucsd).title("Our Campus"));
         mMap.moveCamera(CameraUpdateFactory.newLatLng(ucsd));
-        //TODO: request for permission
+
         //mMap.setMyLocationEnabled(true);
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_FINE_LOCATION: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // location-related task you need to do.
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
+
+
+
+
 }

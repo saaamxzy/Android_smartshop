@@ -1,9 +1,12 @@
 package com.group3.smartshop;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -16,6 +19,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import static com.group3.smartshop.ParseURL.testCall;
 
 public class MainActivity extends AppCompatActivity
     implements NavigationView.OnNavigationItemSelectedListener{
@@ -33,7 +38,8 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "What should we put here?", Snackbar.LENGTH_LONG)
+                new ParseURL().execute();
+                Snackbar.make(view, "something", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -60,6 +66,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void searchNearby(View view) {
+
         Intent intent = new Intent(this, MapsActivity.class);
         startActivity(intent);
 
@@ -104,7 +111,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.login) {
-            // Handle the camera action
+
         } else if (id == R.id.logoff) {
 
         } else if (id == R.id.myshops) {
@@ -112,14 +119,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.settings) {
 
         }
-        /*
-        else if (id == R.id.nav_share) {
 
-
-        } else if (id == R.id.nav_send) {
-
-        }
-        */
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
