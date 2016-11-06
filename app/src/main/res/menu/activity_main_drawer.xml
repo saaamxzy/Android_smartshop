@@ -5,22 +5,21 @@
         <item
             android:id="@+id/login"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Login" />
+            android:title="Log In" />
         <item
-            android:id="@+id/logoff"
+            android:id="@+id/home"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Logoff" />
+            android:title="Home" />
         <item
-            android:id="@+id/myshops"
+            android:id="@+id/nav_slideshow"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="MyShops" />
+            android:title="Slideshow" />
         <item
-            android:id="@+id/settings"
+            android:id="@+id/nav_manage"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Settings" />
+            android:title="Tools" />
     </group>
 
-    <!--
     <item android:title="Communicate">
         <menu>
             <item
@@ -30,10 +29,8 @@
             <item
                 android:id="@+id/nav_send"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Send"
-                />
+                android:title="Send" />
         </menu>
     </item>
-    -->
 
 </menu>
