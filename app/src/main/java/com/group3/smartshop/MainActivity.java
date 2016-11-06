@@ -104,11 +104,11 @@ public class MainActivity extends AppCompatActivity
             Fragment fragment = new SearchFragment();
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
-        } else if (id == R.id.nav_slideshow) {
+        } else if (id == R.id.recommendations) {
 
-        } else if (id == R.id.nav_manage) {
+        } else if (id == R.id.settings) {
 
-        } else if (id == R.id.nav_share) {
+        } else if (id == R.id.fav) {
 
         } else if (id == R.id.nav_send) {
 
