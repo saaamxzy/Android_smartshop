@@ -11,21 +11,21 @@
             android:icon="@drawable/ic_menu_gallery"
             android:title="Home" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/recommendations"
             android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
+            android:title="Recommendations" />
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/settings"
             android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:title="Settings" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="My Profile">
         <menu>
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/fav"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Share" />
+                android:title="Favorite Shops" />
             <item
                 android:id="@+id/nav_send"
                 android:icon="@drawable/ic_menu_send"
