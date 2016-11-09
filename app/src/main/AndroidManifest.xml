@@ -70,9 +70,6 @@
 
         <activity
             android:name=".MapsActivity"
-<<<<<<< HEAD
-            android:label="@string/title_activity_maps"></activity>
-=======
             android:label="@string/title_activity_maps" />
 
         <!-- onlin search activity -->
@@ -84,7 +81,6 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
->>>>>>> origin/master
     </application>
 
 </manifest>

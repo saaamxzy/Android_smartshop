@@ -18,26 +18,19 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-<<<<<<< HEAD
-=======
-import android.widget.EditText;
-import android.widget.TextView;
 
->>>>>>> origin/master
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SearchFragment.OnFragmentInteractionListener{
 
-<<<<<<< HEAD
-=======
+
     private DrawerLayout mDrawer;
     private Toolbar toolbar;
     private NavigationView nvDrawer;
-//    SharedPreferences pos;
-//    public String fileName = "file";
 
     public final static String EXTRA_MESSAGE = "group3.CSE110smartshop.MESSAGE";
->>>>>>> origin/master
+
 
     @Override
     public void onFragmentInteraction(Uri uri){
