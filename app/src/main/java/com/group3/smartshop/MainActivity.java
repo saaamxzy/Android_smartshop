@@ -79,6 +79,11 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    public void searchOnline (View view){
+        Intent intent = new Intent(this, MapsActivity.class);
+        startActivity(intent);
+    }
+
     public void loginButton (View view){
 
         Intent intent = new Intent (this, myProfileActivity.class);
