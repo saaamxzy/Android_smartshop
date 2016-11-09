@@ -16,13 +16,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.EditText;
-
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, SearchFragment.OnFragmentInteractionListener{
 
-    public final static String EXTRA_MESSAGE = "group3.CSE110smartshop.MESSAGE";
 
     @Override
     public void onFragmentInteraction(Uri uri){
@@ -55,14 +52,6 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
     }
 
-    /** Called when the user clicks the Send button */
-    public void searchOnline(View view) {
-        Intent intent = new Intent(this, OnlineSearchActivity.class);
-        EditText editText = (EditText) findViewById(R.id.edit_message);
-        String message = editText.getText().toString();
-        intent.putExtra(EXTRA_MESSAGE, message);
-        startActivity(intent);
-    }
     public void searchNearby(View view) {
 
         Intent intent = new Intent(this, MapsActivity.class);
