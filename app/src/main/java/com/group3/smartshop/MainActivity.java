@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void searchOnline (View view){
-        Intent intent = new Intent(this, MapsActivity.class);
+        Intent intent = new Intent(this, OnlineSearchActivity.class);
         startActivity(intent);
     }
 
