@@ -18,7 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
+import android.widget.EditText;
 
 
 public class MainActivity extends AppCompatActivity
@@ -81,7 +81,12 @@ public class MainActivity extends AppCompatActivity
 
     public void searchOnline (View view){
         Intent intent = new Intent(this, OnlineSearchActivity.class);
+        EditText editText = (EditText) findViewById(R.id.edit_message);
+        String message = editText.getText().toString();
+        intent.putExtra(EXTRA_MESSAGE, message);
+
         startActivity(intent);
+
     }
 
     public void loginButton (View view){
