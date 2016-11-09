@@ -77,7 +77,9 @@
 
         <!-- onlin search activity -->
         <activity android:name=".OnlineSearchActivity" />
-        <activity android:name=".myProfileActivity"></activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
+        <activity android:name=".myProfileActivity">
+
+        </activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
         <meta-data
             android:name="com.google.android.gms.version"
