@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "798079805388",
+    "project_id": "cse110-smart-shop"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:798079805388:android:c340db3308ceafa9",
+        "android_client_info": {
+          "package_name": "com.group3.smartshop2"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "798079805388-s9l53hfp8a6bjtfjk27gi989gii802cu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.group3.smartshop2",
+            "certificate_hash": "1599654CDDB9DE5CA2659F37BEA26530A063B789"
+          }
+        },
+        {
+          "client_id": "798079805388-jmp4vk9sqfueco4um1ej550af52gr74k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDZK69mwwXyweQm-LJySEhvYEP2sa0dGdM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
