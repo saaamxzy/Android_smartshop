@@ -27,6 +27,14 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <EditText
+            android:id="@+id/new_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/new_name"
+            android:inputType="textEmailAddress"
+            android:maxLines="1"/>
+
+        <EditText
             android:id="@+id/old_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -76,6 +84,17 @@
             android:textStyle="bold" />
 
         <Button
+            android:id="@+id/changeUserName"
+            style="?android:textAppearanceSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@color/colorPrimary"
+            android:text="@string/change"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
+        <Button
             android:id="@+id/changePass"
             style="?android:textAppearanceSmall"
             android:layout_width="wrap_content"
@@ -113,6 +132,15 @@
             android:text="@string/remove"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/change_name_button"
+            style="?android:textAppearanceSmall"
+            android:layout_marginTop="16dp"
+            android:text="@string/chang_name"
+            android:textStyle="bold"/>
 
         <Button
             android:id="@+id/change_email_button"
@@ -162,6 +190,14 @@
             android:textStyle="bold" />
 
     </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/test_fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@android:drawable/ic_dialog_info" />
 
     <FrameLayout
         android:id="@+id/progile_frame"

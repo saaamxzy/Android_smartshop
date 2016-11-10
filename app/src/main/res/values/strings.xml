@@ -23,12 +23,14 @@
 
 
     <!-- login strings -->
+    <string name="user_ID">User Name</string>
     <string name="sign_in">Register</string>
     <string name="email">Email</string>
     <string name="minimum_password">Password too short, enter minimum 6 characters!</string>
     <string name="auth_failed">Authentication failed, check your email and password or sign up</string>
     <string name="reset_password">Reset Password</string>
     <string name="back"><![CDATA[<< Back]]></string>
+    <string name="new_name">New User Name</string>
     <string name="new_email">New Email</string>
     <string name="change">Change</string>
     <string name="new_pass">New Password</string>
@@ -36,6 +38,7 @@
     <string name="title_activity_login">Sign in</string>
     <string name="password">Password</string>
     <string name="send">Send</string>
+    <string name="chang_name">Chang User Name</string>
     <string name="change_email">Change Email</string>
     <string name="change_password">Change Password</string>
     <string name="send_password_reset_email">Send Password reset email</string>
@@ -50,6 +53,8 @@
     <string name="forgot_password">Forgot your password?</string>
     <string name="lbl_forgot_password">Forgot password?</string>
     <string name="forgot_password_msg">We just need your registered Email Id to sent you password reset instructions.</string>
-    <string name="email_name">android.studio@android.com</string>
+    <string name="guest">Guest</string>
+    <string name="email_name">Guest@SmartShop.com</string>
+    <string name="login_as_guest">or Login as Guest</string>
 
 </resources>

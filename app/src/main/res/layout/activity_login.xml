@@ -69,6 +69,17 @@
             android:layout_marginTop="20dip"
             android:textColor="@android:color/black" />
 
+        <!--
+        <Button
+            android:id="@+id/btn_login_guest"
+            android:background="@null"
+            android:text="@string/login_as_guest"
+            android:layout_marginTop="10dip"
+            android:layout_width="match_parent"
+            android:layout_height="31dp"
+            android:textAllCaps="false"
+            android:textColor="@color/colorAccent" -->
+
         <Button
             android:id="@+id/btn_reset_password"
             android:background="@null"
@@ -80,14 +91,14 @@
             android:textColor="@color/colorAccent" />
 
         <!-- Link to Login Screen -->
-
         <Button
             android:id="@+id/btn_signup"
-            android:layout_marginTop="20dip"
+
             android:background="@null"
             android:text="@string/link_to_register"
             android:layout_width="376dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="20dip"
             android:textAllCaps="false"
             android:textColor="@color/white"
             android:textSize="15sp" />

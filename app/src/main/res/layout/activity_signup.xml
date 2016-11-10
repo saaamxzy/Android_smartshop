@@ -28,6 +28,21 @@
             android:layout_height="wrap_content">
 
             <EditText
+                android:id="@+id/uid"
+                android:hint="@string/user_ID"
+                android:inputType="textCapWords"
+                android:maxLines="1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
                 android:id="@+id/email"
                 android:hint="@string/email"
                 android:inputType="textEmailAddress"
@@ -71,7 +86,7 @@
             android:id="@+id/btn_reset_password"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dip"
+            android:layout_marginTop="10dip"
             android:background="@null"
             android:text="@string/forgot_password"
             android:textAllCaps="false"
@@ -87,7 +102,7 @@
             android:textSize="15sp"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dip"
+            android:layout_marginTop="0dip"
             android:background="@null" />
 
     </LinearLayout>

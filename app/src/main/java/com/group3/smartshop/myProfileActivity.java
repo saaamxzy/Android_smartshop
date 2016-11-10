@@ -3,6 +3,8 @@ package com.group3.smartshop;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -15,13 +17,15 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class myProfileActivity extends AppCompatActivity {
 
     private Button btnChangeEmail, btnChangePassword, btnSendResetEmail, btnRemoveUser,
-            changeEmail, changePassword, sendEmail, remove, signOut;
+            btnChangeName, changeUserName, changeEmail, changePassword, sendEmail,
+            remove, signOut;
 
-    private EditText oldEmail, newEmail, password, newPassword;
+    private EditText oldEmail, newEmail, newName, password, newPassword;
     private ProgressBar progressBar;
     private FirebaseAuth.AuthStateListener authListener;
     private FirebaseAuth auth;
@@ -53,25 +57,50 @@ public class myProfileActivity extends AppCompatActivity {
             }
         };
 
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.test_fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+//                if (user.getDisplayName() != null) {
+                Snackbar.make(view, "Current logged in as: " + user.getDisplayName(),
+                            Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
+//                }else{
+//                    Snackbar.make(view, "Current logged in as: Guest",
+//                            Snackbar.LENGTH_LONG)
+//                            .setAction("Action", null).show();
+//                }
+            }
+        });
+
+        // profile page button connection
+        btnChangeName = (Button) findViewById(R.id.change_name_button);
         btnChangeEmail = (Button) findViewById(R.id.change_email_button);
         btnChangePassword = (Button) findViewById(R.id.change_password_button);
         btnSendResetEmail = (Button) findViewById(R.id.sending_pass_reset_button);
         btnRemoveUser = (Button) findViewById(R.id.remove_user_button);
+
+        // inside pages connection
+        changeUserName = (Button) findViewById(R.id.changeUserName);
         changeEmail = (Button) findViewById(R.id.changeEmail);
         changePassword = (Button) findViewById(R.id.changePass);
         sendEmail = (Button) findViewById(R.id.send);
         remove = (Button) findViewById(R.id.remove);
         signOut = (Button) findViewById(R.id.sign_out);
 
+        newName = (EditText) findViewById(R.id.new_name);
         oldEmail = (EditText) findViewById(R.id.old_email);
         newEmail = (EditText) findViewById(R.id.new_email);
         password = (EditText) findViewById(R.id.password);
         newPassword = (EditText) findViewById(R.id.newPassword);
 
+        newName.setVisibility(View.GONE);
         oldEmail.setVisibility(View.GONE);
         newEmail.setVisibility(View.GONE);
         password.setVisibility(View.GONE);
         newPassword.setVisibility(View.GONE);
+
+        changeUserName.setVisibility(View.GONE);
         changeEmail.setVisibility(View.GONE);
         changePassword.setVisibility(View.GONE);
         sendEmail.setVisibility(View.GONE);
@@ -83,13 +112,64 @@ public class myProfileActivity extends AppCompatActivity {
             progressBar.setVisibility(View.GONE);
         }
 
+        btnChangeName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                newName.setVisibility(View.VISIBLE);
+                oldEmail.setVisibility(View.GONE);
+                newEmail.setVisibility(View.GONE);
+                password.setVisibility(View.GONE);
+                newPassword.setVisibility(View.GONE);
+
+                changeUserName.setVisibility(View.VISIBLE);
+                changeEmail.setVisibility(View.GONE);
+                changePassword.setVisibility(View.GONE);
+                sendEmail.setVisibility(View.GONE);
+                remove.setVisibility(View.GONE);
+            }
+        });
+
+        // change user id name
+        changeUserName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressBar.setVisibility(View.VISIBLE);
+                if (user != null && !newName.getText().toString().trim().equals("")) {
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setDisplayName(newName.getText().toString().trim())
+                            .build();
+                    user.updateProfile(profileUpdates)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(myProfileActivity.this, "User Name is updated.", Toast.LENGTH_LONG).show();
+                                        progressBar.setVisibility(View.GONE);
+                                    } else {
+                                        Toast.makeText(myProfileActivity.this, "Failed to update email!", Toast.LENGTH_LONG).show();
+                                        progressBar.setVisibility(View.GONE);
+                                    }
+                                }
+                            });
+
+                } else if (newEmail.getText().toString().trim().equals("")) {
+                    newEmail.setError("Enter email");
+                    progressBar.setVisibility(View.GONE);
+                }
+            }
+        });
+
         btnChangeEmail.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                newName.setVisibility(View.GONE);
                 oldEmail.setVisibility(View.GONE);
                 newEmail.setVisibility(View.VISIBLE);
                 password.setVisibility(View.GONE);
                 newPassword.setVisibility(View.GONE);
+
+                changeUserName.setVisibility(View.GONE);
                 changeEmail.setVisibility(View.VISIBLE);
                 changePassword.setVisibility(View.GONE);
                 sendEmail.setVisibility(View.GONE);

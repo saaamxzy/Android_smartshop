@@ -3,7 +3,6 @@ package com.group3.smartshop;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
-//import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -19,6 +18,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 
 public class MainActivity extends AppCompatActivity
@@ -28,6 +30,8 @@ public class MainActivity extends AppCompatActivity
     private DrawerLayout mDrawer;
     private Toolbar toolbar;
     private NavigationView nvDrawer;
+    private FirebaseAuth auth;
+    private TextView name, email;
 
     public final static String EXTRA_MESSAGE = "group3.CSE110smartshop.MESSAGE";
 
@@ -40,6 +44,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //Get Firebase auth instance
+        auth = FirebaseAuth.getInstance();
+
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -62,14 +70,14 @@ public class MainActivity extends AppCompatActivity
         nvDrawer = (NavigationView) findViewById(R.id.nav_view);
         nvDrawer.setNavigationItemSelectedListener(this);
 
-        //*******************************************************
-//        View hView =  nvDrawer.getHeaderView(0);
-//        TextView nav_user = (TextView)hView.findViewById(R.id.nav_view);
-//        pos = getSharedPreferences(fileName, 0);
-//        String data = pos.getString("userEmail", "");
-//        nav_user.setText(data);
-//        // Setup drawer view
-//        setupDrawerContent(nvDrawer);
+        //get current user
+        final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        View header = nvDrawer.getHeaderView(0);
+        name = (TextView)header.findViewById(R.id.nav_userName);
+        email = (TextView)header.findViewById(R.id.nav_email);
+        name.setText(user.getDisplayName());
+        email.setText(user.getEmail());
     }
 
     public void searchNearby(View view) {
