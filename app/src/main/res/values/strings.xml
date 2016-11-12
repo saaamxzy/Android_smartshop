@@ -57,4 +57,6 @@
     <string name="email_name">Guest@SmartShop.com</string>
     <string name="login_as_guest">or Login as Guest</string>
 
+    <string name="add_to_favorite">Add to Favorite❤</string>
+
 </resources>

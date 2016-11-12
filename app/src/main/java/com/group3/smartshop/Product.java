@@ -1,45 +1,44 @@
 package com.group3.smartshop;
 
 /**
- * Created by Isabella on 2016/10/31.
+ * Created by Isabella on 2016/11/11.
  */
 
 public class Product {
     private String name;
     private double money;
-    private int thumbnail;
+    private int img;
 
     public Product() {
     }
 
-    public Product(String name, double money, int thumbnail) {
+    public Product(String name, double money, int img) {
         this.name = name;
         this.money = money;
-        this.thumbnail = thumbnail;
-    }
-
-    public String getName() {
-        return name;
+        this.img = img;
     }
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public double getHowMuch() {
-        return money;
+    public String getName() {
+        return name;
     }
 
     public void setHowMuch(double m) {
         this.money = m;
     }
 
-    public int getThumbnail() {
-        return thumbnail;
+    public double getHowMuch() {
+        return money;
     }
 
-    public void setThumbnail(int thumbnail) {
-        this.thumbnail = thumbnail;
+    public void setTImg(int img) {
+        this.img = img;
+    }
+
+    public int getImg() {
+        return img;
     }
 }
-

@@ -8,5 +8,8 @@
     <color name="dark_blue">#0c75b1</color>
     <color name="white">#ffffff</color>
     <color name="watermelon_red">#ff6861</color>
+    <color name="font">#FBFBFB</color>
+    <color name="dark_shadow">#e7000000</color>
+    <color name="subtitle_shadow">#4c4c4c</color>
 
 </resources>

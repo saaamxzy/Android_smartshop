@@ -8,4 +8,22 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="g_top_margin">30dp</dimen>
     <dimen name="logo_w_h">100dp</dimen>
+
+    <!-- for main search online -->
+    <dimen name="appbar_height">270dp</dimen>
+    <dimen name="title_size">35dp</dimen>
+    <dimen name="subtitle_size">18dp</dimen>
+
+    <!-- for card product -->
+    <dimen name="margin_card">5dp</dimen>
+    <dimen name="card_rad">0dp</dimen>
+    <dimen name="elev">3dp</dimen>
+    <dimen name="card_height">160dp</dimen>
+    <dimen name="padding">10dp</dimen>
+    <dimen name="card_title">15dp</dimen>
+    <dimen name="price_padding">10dp</dimen>
+    <dimen name="price_size">12dp</dimen>
+    <dimen name="favorite_width">20dp</dimen>
+    <dimen name="favorite_height">30dp</dimen>
+
 </resources>
