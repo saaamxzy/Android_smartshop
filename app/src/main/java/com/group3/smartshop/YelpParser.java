@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 public class YelpParser {
-    public static final String BASE_URL = "https://api.yelp.com/v3/";
 
     private List<Business> businesses = new ArrayList<Business>();
     private Integer total;

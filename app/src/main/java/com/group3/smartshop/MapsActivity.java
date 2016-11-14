@@ -20,13 +20,28 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private static final int PERMISSIONS_REQUEST_FINE_LOCATION = 1;
+    public static final String BASE_URL = "https://api.yelp.com/v3/";
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
+    private double mLat, mLgn;
     private TextView mLatitudeText,mLongitudeText;
+    private List<Business> businesses;
+
+    public void getAllBusiness() {
+
+    }
 
     protected void onStart() {
         mGoogleApiClient.connect();
@@ -41,6 +56,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getAllBusiness();
 
 
 
@@ -98,6 +114,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 System.out.println("location info grabbed:");
                 System.out.println(String.valueOf(mLastLocation.getLatitude()));
                 System.out.println(String.valueOf(mLastLocation.getLongitude()));
+                mLat = mLastLocation.getLatitude();
+                mLgn = mLastLocation.getLongitude();
             }
         } else {
             // Show rationale and request permission.
@@ -127,25 +145,61 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
-        // Add a marker in Sydney and move the camera
-        LatLng ucsd = new LatLng(32.8801, -117.2340);
+        LatLng myLl = new LatLng(mLat,mLgn);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
         } else {
             // Show rationale and request permission.
         }
+        /*
         Marker ucsdMarker = mMap.addMarker(new MarkerOptions()
                 .position(ucsd)
                 .title("Our Campus")
                 .snippet("2016")
-        );
+        );*/
+        System.out.println("grabbing all businesses");
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        YelpApiEndPointInterface apiService = retrofit.create(YelpApiEndPointInterface.class);
+        Call<YelpParser> call = apiService.getTest("Bearer z-wkW_0ij8grCGOBsXW2jivBrYrsGThT4FyWcyQYtmcHh7sYTDMfXu_ypDbY0vFWDOZ7uIRZKzxYLTctx8cdkjIlBhBqoaiMKyF2n7quen_6BEG_pBgrnMfwi6YWWHYx");
+        call.enqueue(new Callback<YelpParser>() {
+            @Override
+            public void onResponse(Call<YelpParser> call, Response<YelpParser> response) {
+                if (response.body() == null) {
+                    System.out.println("body is null");
+                }
+                businesses = response.body().getBusinesses();
+                for (int i = 0; i < businesses.size(); i++) {
+                    LatLng ll = new LatLng(businesses.get(i).getCoordinates().getLatitude(),
+                            businesses.get(i).getCoordinates().getLongitude());
+                    mMap.addMarker(new MarkerOptions()
+                            .position(ll)
+                            .title(businesses.get(i).
+                                    getName()).
+                                    snippet(businesses.get(i).
+                                            getDistance().intValue() + " meters away from you")
+                    );
+                }
+            }
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(ucsd));
+            @Override
+            public void onFailure(Call<YelpParser> call, Throwable t) {
+                System.out.println("businesses not grabbed");
+                System.out.println(t.toString());
+            }
+        });
 
-        //mMap.setMyLocationEnabled(true);
+
+
+
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(myLl));
     }
 
 

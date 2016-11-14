@@ -6,7 +6,6 @@ package com.group3.smartshop;
 
 import android.os.AsyncTask;
 
-import com.yelp.clientlib.connection.YelpAPIFactory;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,7 +19,6 @@ import static com.group3.smartshop.R.string.yelp_token;
 
 public class ParseURL extends AsyncTask<URL, Void, String> {
 
-    //YelpAPIFactory apiFactory = new YelpAPIFactory();
 
     @Override
     protected String doInBackground(URL... params){

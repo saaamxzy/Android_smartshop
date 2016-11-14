@@ -11,7 +11,7 @@
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_height="match_parent"
         tools:context="com.group3.smartshop.MapsActivity"
-        map:cameraZoom="13"
+        map:cameraZoom="15"
         map:uiCompass="true"
         android:layout_width="match_parent" />
 
