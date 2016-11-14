@@ -6,6 +6,8 @@ package com.group3.smartshop;
 
 import android.os.AsyncTask;
 
+import com.yelp.clientlib.connection.YelpAPIFactory;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,6 +19,8 @@ import static com.group3.smartshop.R.string.yelp_token;
 
 
 public class ParseURL extends AsyncTask<URL, Void, String> {
+
+    //YelpAPIFactory apiFactory = new YelpAPIFactory();
 
     @Override
     protected String doInBackground(URL... params){
@@ -43,18 +47,7 @@ public class ParseURL extends AsyncTask<URL, Void, String> {
 
 
 
-            /*
-            String protocol = url.getProtocol();
-            String host = url.getHost();
-            int port = url.getPort();
-            String path = url.getPath();
 
-            System.out.println("URL created: " + url);
-            System.out.println("protocol: " + protocol);
-            System.out.println("host: " + host);
-            System.out.println("port: " + port);
-            System.out.println("path: " + path);
-            */
 
             BufferedReader in = new BufferedReader(
                     new InputStreamReader(url.openStream())

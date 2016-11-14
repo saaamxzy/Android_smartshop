@@ -6,13 +6,10 @@
     <string name="button_nearby">NEARBY</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
-
     <string name="action_settings">Settings</string>
 
-    <string name="hello_blank_fragment">Hiiiiiiii</string>
 
 
-    <!-- URL Strings -->
 
     <!-- test string -->
     <string name="profile_test">Profile Test</string>
