@@ -1,6 +1,7 @@
 package com.group3.smartshop;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -32,6 +33,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
     private static final int PERMISSIONS_REQUEST_FINE_LOCATION = 1;
     public static final String BASE_URL = "https://api.yelp.com/v3/";
+    public static final String YELP_TOKEN =
+            "Bearer z-wkW_0ij8grCGOBsXW2jivBrYrsGThT4FyWcyQYtmcHh7sYTDMfXu_ypDbY0vFWDOZ7uIRZKzxYLTctx8cdkjIlBhBqoaiMKyF2n7quen_6BEG_pBgrnMfwi6YWWHYx";
+    private String search_term;
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
@@ -56,6 +60,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent = getIntent();
+        search_term = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
         getAllBusiness();
 
 
@@ -111,9 +117,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (mLastLocation != null) {
                 //mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
                 //mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
-                System.out.println("location info grabbed:");
-                System.out.println(String.valueOf(mLastLocation.getLatitude()));
-                System.out.println(String.valueOf(mLastLocation.getLongitude()));
+
                 mLat = mLastLocation.getLatitude();
                 mLgn = mLastLocation.getLongitude();
             }
@@ -167,7 +171,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         YelpApiEndPointInterface apiService = retrofit.create(YelpApiEndPointInterface.class);
-        Call<YelpParser> call = apiService.getTest("Bearer z-wkW_0ij8grCGOBsXW2jivBrYrsGThT4FyWcyQYtmcHh7sYTDMfXu_ypDbY0vFWDOZ7uIRZKzxYLTctx8cdkjIlBhBqoaiMKyF2n7quen_6BEG_pBgrnMfwi6YWWHYx");
+        Call<YelpParser> call = apiService.getBusinesses(YELP_TOKEN, search_term, 32.8672972, -117.209346);
         call.enqueue(new Callback<YelpParser>() {
             @Override
             public void onResponse(Call<YelpParser> call, Response<YelpParser> response) {
