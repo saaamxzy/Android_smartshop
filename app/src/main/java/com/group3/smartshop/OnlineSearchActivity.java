@@ -30,7 +30,8 @@ import android.content.res.Resources;
 
 public class OnlineSearchActivity extends AppCompatActivity {
     private String message;
-    ArrayList<String> list = new ArrayList<String>();
+    ArrayList<String> nameList = new ArrayList<String>();
+    ArrayList<String> priceList = new ArrayList<String>();
 
     private RecyclerView recyclerView;
     private ProductAdapter adapter;
@@ -123,8 +124,45 @@ public class OnlineSearchActivity extends AppCompatActivity {
                 Elements result = doc.select("li[id^=result_]");
 
                 for(Element i: result) {
-                    String word = i.text();
-                    list.add(word);
+
+                }
+
+                //get item name
+                for(Element i: result.select("a[class^=a-link-normal s-access-detail-page  a-text-normal"))
+                {
+                    nameList.add(i.attr("title"));
+                }
+
+                //get item price
+                for(Element i:  result)
+                {
+                  String price = "";
+                    //TODO: has two span classes
+                  Elements price1 = i.select("span[class^=sx-price-whole");
+                  Elements price2 = i.select("span[class^=a-size-base a-color-base");
+
+                  if(price1.text() != "")
+                  {
+                      //TODO: get fractional if have time
+                      //Elements fractionalPrice = i.select("sup[class^=sx-price-fractional");
+                      // + "."+ fractionalPrice.text()
+                      System.out.println("Price1:       " + price1.first().text());
+                      priceList.add(price1.text());
+                  }
+                  else if(price2.text() != "")
+                  {
+                      System.out.println("Price2:       " + price2.first().text());
+                      priceList.add(price2.first().text());
+                  }
+                  else
+                  {
+                      nameList.remove(i);
+                  }
+                }
+
+                //TODO: get item picture
+                for (Element i : result.select("img")) {
+                    System.out.println(i.attr("src"));
                 }
             }catch(Exception e){e.printStackTrace();}
 
@@ -143,11 +181,22 @@ public class OnlineSearchActivity extends AppCompatActivity {
                     R.drawable.shopping_cart,
                     R.drawable.shopping_cart};
 
-            for(int i = 1; i<=10; i++) {
-                String nameText = "";
-                String textPrice = "";
-                double price = 0.00;
+            for(int i = 1; i<=10 && i<nameList.size() && i<priceList.size(); i++) {
+                String nameText = nameList.get(i);
+                String price = priceList.get(i);
 
+
+                if(price.indexOf(',') != -1)
+                {
+                  price = price.substring(0, price.indexOf(',')) + price.substring(price.indexOf(',')+1);
+                }
+
+                if(price.indexOf('$') != -1)
+                {
+                  price = price.substring(0, price.indexOf('$')) + price.substring(price.indexOf('$')+1);
+                }
+                double finalPrice = Double.parseDouble(price);
+                /*
                 int index = list.get(i).indexOf('$');
                 if (index != -1) {
                     nameText = list.get(i).substring(0, index);
@@ -157,17 +206,48 @@ public class OnlineSearchActivity extends AppCompatActivity {
 
                 textPrice = list.get(i).substring(index + 2);
                 int indexSpace1 = textPrice.indexOf(' ');
-
+                int deleteChar = 0;
+                boolean findDelete = false;
                 if (textPrice.substring(0, indexSpace1).indexOf('.')!= -1){
+                    textPrice = list.get(i).substring(index + 1);
                     int pindex = textPrice.substring(0, indexSpace1).indexOf('.');
-                    price = Double.parseDouble(textPrice.substring(0, pindex+3));
-                }else {
+                    String temp = textPrice.substring(0, pindex);
+
+                    for(int j = 0; j < temp.length(); j++)
+                    {
+                        if(temp.charAt(j) == ',')
+                        {
+                            deleteChar = j;
+                            findDelete = true;
+                            break;
+                        }
+                    }
+
+                    if(findDelete)
+                      temp = temp.substring(0, deleteChar) + temp.substring(deleteChar+1);
+
+                    price = Double.parseDouble(temp+textPrice.substring(pindex, pindex+3));
+                    System.out.println("This is temp\n\n\n\n" +temp);
+                }
+                else {
                     String temp = textPrice.substring(0, indexSpace1+3);
+                    for(int j = 0; j < temp.length(); j++)
+                    {
+                      if(temp.charAt(j) == ',')
+                      {
+                        deleteChar = j;
+                        findDelete = true;
+                        break;
+                      }
+                    }
+                    if(findDelete)
+                      temp = temp.substring(0, deleteChar) + temp.substring(deleteChar+1);
+
                     temp = temp.replace(' ', '.');
                     price = Double.parseDouble(temp);
-                }
+                }*/
 
-                Product temp = new Product(nameText, price, pictures[i]);
+                Product temp = new Product(nameText, finalPrice, pictures[i]);
                 productList.add(temp);
             }
 
