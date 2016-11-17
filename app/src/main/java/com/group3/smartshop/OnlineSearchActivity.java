@@ -2,11 +2,15 @@ package com.group3.smartshop;
 
 import android.graphics.Rect;
 import android.os.AsyncTask;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.View;
 import android.webkit.WebView;
@@ -30,8 +34,8 @@ import android.content.res.Resources;
 
 public class OnlineSearchActivity extends AppCompatActivity {
     private String message;
-    ArrayList<String> nameList = new ArrayList<String>();
-    ArrayList<String> priceList = new ArrayList<String>();
+    ArrayList<String> list = new ArrayList<String>();
+    ArrayList<String> pics = new ArrayList<String>();
 
     private RecyclerView recyclerView;
     private ProductAdapter adapter;
@@ -44,6 +48,8 @@ public class OnlineSearchActivity extends AppCompatActivity {
         setContentView(R.layout.activity_online_search);
         Intent intent = getIntent();
         message = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
+
+        initToolbar();
 
         productList = new ArrayList<>();
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
@@ -108,147 +114,133 @@ public class OnlineSearchActivity extends AppCompatActivity {
         }
     }
 
+    public Double getPrice (String price){
+        return Double.parseDouble(price.replaceAll(",", ""));
+    }
+
+    private void initToolbar() {
+        final CollapsingToolbarLayout toolbar
+                = (CollapsingToolbarLayout)findViewById(R.id.app_toolbar);
+        toolbar.setTitle(" ");
+        AppBarLayout appBar = (AppBarLayout) findViewById(R.id.app_bar_1);
+        appBar.setExpanded(true);
+
+        appBar.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
+            boolean isShow = false;
+            int scrollRange = -1;
+
+            @Override
+            public void onOffsetChanged(AppBarLayout layout, int offset) {
+                if (scrollRange == -1) {
+                    scrollRange = layout.getTotalScrollRange();
+                }
+                if (scrollRange + offset == 0) {
+                    toolbar.setTitle(getString(R.string.app_name));
+                    isShow = true;
+                } else if (isShow) {
+                    toolbar.setTitle(" ");
+                    isShow = false;
+                }
+            }
+        });
+    }
+
     public void refresh(){
         adapter.notifyDataSetChanged();
     }
 
     public class doit extends AsyncTask<Void,Void,Void> {
 
-        private ProductAdapter adapter;
         @Override
         protected Void doInBackground(Void... voids) {
             String website = "https://www.amazon.com/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords="+message;
+
+            list.clear();
+            pics.clear();
+
             try {
 
                 Document doc = Jsoup.connect(website).get();
                 Elements result = doc.select("li[id^=result_]");
 
                 for(Element i: result) {
-
+                    String word = i.text();
+                    list.add(word);
                 }
 
-                //get item name
-                for(Element i: result.select("a[class^=a-link-normal s-access-detail-page  a-text-normal"))
-                {
-                    nameList.add(i.attr("title"));
-                }
-
-                //get item price
-                for(Element i:  result)
-                {
-                  String price = "";
-                    //TODO: has two span classes
-                  Elements price1 = i.select("span[class^=sx-price-whole");
-                  Elements price2 = i.select("span[class^=a-size-base a-color-base");
-
-                  if(price1.text() != "")
-                  {
-                      //TODO: get fractional if have time
-                      //Elements fractionalPrice = i.select("sup[class^=sx-price-fractional");
-                      // + "."+ fractionalPrice.text()
-                      System.out.println("Price1:       " + price1.first().text());
-                      priceList.add(price1.text());
-                  }
-                  else if(price2.text() != "")
-                  {
-                      System.out.println("Price2:       " + price2.first().text());
-                      priceList.add(price2.first().text());
-                  }
-                  else
-                  {
-                      nameList.remove(i);
-                  }
-                }
-
-                //TODO: get item picture
                 for (Element i : result.select("img")) {
-                    System.out.println(i.attr("src"));
+                    String p = i.attr("src");
+                    System.out.println("all: " + p);
+                    if (p.contains("_AC_US160_.jpg")) {
+                        pics.add(p);
+                        System.out.println("true");
+                    }else{
+                        continue;
+                    }
                 }
             }catch(Exception e){e.printStackTrace();}
 
 
-            // TODO: is there any way to put image into here??
-            int[] pictures = new int[]{
-                    R.drawable.shopping_cart,
-                    R.drawable.shopping_cart,
-                    R.drawable.shopping_cart,
-                    R.drawable.shopping_cart,
-                    R.drawable.shopping_cart,
-                    R.drawable.shopping_cart,
-                    R.drawable.shopping_cart,
-                    R.drawable.shopping_cart,
-                    R.drawable.shopping_cart,
-                    R.drawable.shopping_cart,
-                    R.drawable.shopping_cart};
+//            int[] pictures = new int[]{
+//                    R.drawable.shopping_cart,
+//                    R.drawable.shopping_cart,
+//                    R.drawable.shopping_cart,
+//                    R.drawable.shopping_cart,
+//                    R.drawable.shopping_cart,
+//                    R.drawable.shopping_cart,
+//                    R.drawable.shopping_cart,
+//                    R.drawable.shopping_cart,
+//                    R.drawable.shopping_cart,
+//                    R.drawable.shopping_cart,
+//                    R.drawable.shopping_cart};
 
-            for(int i = 1; i<=10 && i<nameList.size() && i<priceList.size(); i++) {
-                String nameText = nameList.get(i);
-                String price = priceList.get(i);
+            boolean cate = false;
 
+            for(int i = 0; i<10; ++i) {
+                String nameText = "";
+                String textPrice = "";
+                String finalPrice = "";
+                double price = 0.00;
 
-                if(price.indexOf(',') != -1)
-                {
-                  price = price.substring(0, price.indexOf(',')) + price.substring(price.indexOf(',')+1);
-                }
-
-                if(price.indexOf('$') != -1)
-                {
-                  price = price.substring(0, price.indexOf('$')) + price.substring(price.indexOf('$')+1);
-                }
-                double finalPrice = Double.parseDouble(price);
-                /*
                 int index = list.get(i).indexOf('$');
                 if (index != -1) {
                     nameText = list.get(i).substring(0, index);
                 } else {
-                    nameText = "No matching product!";
+                    cate = true;
+                    continue;
                 }
 
-                textPrice = list.get(i).substring(index + 2);
-                int indexSpace1 = textPrice.indexOf(' ');
-                int deleteChar = 0;
-                boolean findDelete = false;
-                if (textPrice.substring(0, indexSpace1).indexOf('.')!= -1){
+                if (list.get(i).charAt(index+1) == ' ') {
+                    textPrice = list.get(i).substring(index + 2);
+                }else{
                     textPrice = list.get(i).substring(index + 1);
-                    int pindex = textPrice.substring(0, indexSpace1).indexOf('.');
-                    String temp = textPrice.substring(0, pindex);
-
-                    for(int j = 0; j < temp.length(); j++)
-                    {
-                        if(temp.charAt(j) == ',')
-                        {
-                            deleteChar = j;
-                            findDelete = true;
-                            break;
-                        }
-                    }
-
-                    if(findDelete)
-                      temp = temp.substring(0, deleteChar) + temp.substring(deleteChar+1);
-
-                    price = Double.parseDouble(temp+textPrice.substring(pindex, pindex+3));
-                    System.out.println("This is temp\n\n\n\n" +temp);
                 }
-                else {
-                    String temp = textPrice.substring(0, indexSpace1+3);
-                    for(int j = 0; j < temp.length(); j++)
-                    {
-                      if(temp.charAt(j) == ',')
-                      {
-                        deleteChar = j;
-                        findDelete = true;
+
+                for (int j = 0; j < textPrice.length(); ++j){
+                    if (textPrice.charAt(j) == '.'){
+                        finalPrice = textPrice.substring(0, j+3);
                         break;
-                      }
                     }
-                    if(findDelete)
-                      temp = temp.substring(0, deleteChar) + temp.substring(deleteChar+1);
 
-                    temp = temp.replace(' ', '.');
-                    price = Double.parseDouble(temp);
-                }*/
+                    if ( textPrice.charAt(j) == ' '){
+                        textPrice = textPrice.replace(' ', '.');
+                        finalPrice = textPrice.substring(0, j+3);
+                        break;
+                    }
+                }
 
-                Product temp = new Product(nameText, finalPrice, pictures[i]);
-                productList.add(temp);
+                if (finalPrice.length() == 0) price = -1;
+                else price = getPrice(finalPrice);
+
+
+                Product pro;
+                if (cate) {
+                    pro = new Product(nameText, price, pics.get(i-1));
+                }else {
+                    pro = new Product(nameText, price, pics.get(i));
+                }
+
+                productList.add(pro);
             }
 
             runOnUiThread(new Runnable() {

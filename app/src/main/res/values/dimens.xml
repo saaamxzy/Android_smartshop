@@ -10,7 +10,7 @@
     <dimen name="logo_w_h">100dp</dimen>
 
     <!-- for main search online -->
-    <dimen name="appbar_height">270dp</dimen>
+    <dimen name="appbar_height">280dp</dimen>
     <dimen name="title_size">35dp</dimen>
     <dimen name="subtitle_size">18dp</dimen>
 

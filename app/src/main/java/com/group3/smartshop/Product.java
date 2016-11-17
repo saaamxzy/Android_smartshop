@@ -6,13 +6,13 @@ package com.group3.smartshop;
 
 public class Product {
     private String name;
-    private double money;
-    private int img;
+    private Double money;
+    private String img;
 
     public Product() {
     }
 
-    public Product(String name, double money, int img) {
+    public Product(String name, Double money, String img) {
         this.name = name;
         this.money = money;
         this.img = img;
@@ -26,19 +26,19 @@ public class Product {
         return name;
     }
 
-    public void setHowMuch(double m) {
+    public void setHowMuch(Double m) {
         this.money = m;
     }
 
-    public double getHowMuch() {
+    public Double getHowMuch() {
         return money;
     }
 
-    public void setTImg(int img) {
+    public void setTImg(String img) {
         this.img = img;
     }
 
-    public int getImg() {
+    public String getImg() {
         return img;
     }
 }
