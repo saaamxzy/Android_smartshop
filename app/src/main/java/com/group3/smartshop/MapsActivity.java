@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -20,7 +23,12 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -31,6 +39,59 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+
+    class SmartInfoWindowAdapter implements GoogleMap.InfoWindowAdapter{
+        private final View smartContentsView;
+        SmartInfoWindowAdapter(){
+            smartContentsView = getLayoutInflater().inflate(R.layout.googlemaps_infowindow, null);
+        }
+
+        @Override
+        public View getInfoContents(Marker marker){
+            TextView windowTitle = (TextView) smartContentsView.findViewById(R.id.infowindowtitle);
+            windowTitle.setText(marker.getTitle());
+            TextView windowDescription =
+                    (TextView) smartContentsView.findViewById(R.id.infowindowdescription);
+            windowDescription.setText(marker.getSnippet());
+            ImageView windowImage = (ImageView) smartContentsView.findViewById(R.id.infowindowimg);
+
+            String imgUrl = markerImages.get(marker);
+            Picasso.with(getApplicationContext())
+                    .load(imgUrl)
+                    .into(windowImage, new InfoWindowRefresher(marker));
+
+
+            return smartContentsView;
+        }
+
+        @Override
+        public View getInfoWindow(Marker marker){
+            return null;
+        }
+    }
+
+    private class InfoWindowRefresher implements com.squareup.picasso.Callback {
+        private Marker markerToRefresh = null;
+
+        public InfoWindowRefresher(Marker marker){
+            this.markerToRefresh = marker;
+        }
+
+        @Override
+        public void onSuccess() {
+            if (markerToRefresh != null && markerToRefresh.isInfoWindowShown()) {
+                markerToRefresh.hideInfoWindow();
+                markerToRefresh.showInfoWindow();
+            }
+        }
+
+        @Override
+        public void onError(){
+            Log.e(getClass().getSimpleName(), "Error loading thumbnail!");
+        }
+
+    }
+
     private static final int PERMISSIONS_REQUEST_FINE_LOCATION = 1;
     public static final String BASE_URL = "https://api.yelp.com/v3/";
     public static final String YELP_TOKEN =
@@ -42,10 +103,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private double mLat, mLgn;
     private TextView mLatitudeText,mLongitudeText;
     private List<Business> businesses;
+    private HashMap<Marker, String> markerImages;
 
-    public void getAllBusiness() {
-
-    }
 
     protected void onStart() {
         mGoogleApiClient.connect();
@@ -62,7 +121,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         search_term = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
-        getAllBusiness();
+        markerImages = new HashMap<Marker, String>();
 
 
 
@@ -152,23 +211,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
-        LatLng myLl = new LatLng(mLat,mLgn);
+        mMap.setInfoWindowAdapter(new SmartInfoWindowAdapter());
+
+        LatLng myLl = new LatLng(32.8673,-117.209);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
         } else {
             // Show rationale and request permission.
         }
-        /*
-        Marker ucsdMarker = mMap.addMarker(new MarkerOptions()
-                .position(ucsd)
-                .title("Our Campus")
-                .snippet("2016")
-        );*/
+
         System.out.println("grabbing all businesses");
+        Gson gson = new GsonBuilder()
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .create();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         YelpApiEndPointInterface apiService = retrofit.create(YelpApiEndPointInterface.class);
         Call<YelpParser> call = apiService.getBusinesses(YELP_TOKEN, search_term, 32.8672972, -117.209346);
@@ -179,16 +238,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     System.out.println("body is null");
                 }
                 businesses = response.body().getBusinesses();
+
                 for (int i = 0; i < businesses.size(); i++) {
                     LatLng ll = new LatLng(businesses.get(i).getCoordinates().getLatitude(),
                             businesses.get(i).getCoordinates().getLongitude());
-                    mMap.addMarker(new MarkerOptions()
+                    Marker marker = mMap.addMarker(new MarkerOptions()
                             .position(ll)
                             .title(businesses.get(i).
-                                    getName()).
-                                    snippet(businesses.get(i).
+                                    getName())
+                            .snippet(businesses.get(i).
                                             getDistance().intValue() + " meters away from you")
                     );
+                    markerImages.put(marker, businesses.get(i).getImageUrl());
                 }
             }
 
