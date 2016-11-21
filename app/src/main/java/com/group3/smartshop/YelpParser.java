@@ -15,6 +15,7 @@ public class YelpParser {
      *
      * @return
      * The businesses
+     *
      */
     public List<Business> getBusinesses() {
         return businesses;

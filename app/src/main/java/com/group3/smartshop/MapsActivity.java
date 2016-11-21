@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -20,7 +23,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.vision.text.Text;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
 import java.util.List;
 
 import retrofit2.Call;
@@ -29,9 +38,101 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/*
+ * Helper class to store useful info about a certain marker. Should be put into a hashMap by
+ * put(marker, MarkerInfo)
+ */
+class MarkerInfo {
+    public String imgUrl = "";
+    public String webUrl = "";
+    public int reviewCount = -1;
+    public double rating = -1;
+    MarkerInfo(String image, String web, int reviewNums, double rating) {
+        this.imgUrl = image;
+        this.webUrl = web;
+        this.reviewCount = reviewNums;
+        this.rating = rating;
+    }
+}
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+
+
+
+    /*
+     * Adapter for InfoWindow
+     */
+    class SmartInfoWindowAdapter implements GoogleMap.InfoWindowAdapter{
+        private final View smartContentsView;
+        SmartInfoWindowAdapter(){
+            smartContentsView = getLayoutInflater().inflate(R.layout.googlemaps_infowindow, null);
+        }
+
+        @Override
+        public View getInfoContents(Marker marker){
+            TextView windowTitle = (TextView) smartContentsView.findViewById(R.id.infowindowtitle);
+            windowTitle.setText(marker.getTitle());
+            TextView windowDescription =
+                    (TextView) smartContentsView.findViewById(R.id.infowindowdescription);
+            windowDescription.setText(marker.getSnippet());
+            ImageView windowImage = (ImageView) smartContentsView.findViewById(R.id.infowindowimg);
+
+            String imgUrl = markerImages.get(marker).imgUrl;
+            Picasso.with(getApplicationContext())
+                    .load(imgUrl)
+                    .into(windowImage, new InfoWindowRefresher(marker));
+
+            TextView windowRating = (TextView)
+                    smartContentsView.findViewById(R.id.infowindow_rating);
+            String rating = "Rating Score: " + Double.toString(markerImages.get(marker).rating);
+
+            windowRating.setText(rating);
+
+            TextView windowRatingCount =
+                    (TextView)smartContentsView.findViewById(R.id.infowindow_numofratings);
+
+            String numOfRating = "Total number of reviews: " +
+                    Integer.toString(markerImages.get(marker).reviewCount);
+            windowRatingCount.setText(numOfRating);
+
+
+            return smartContentsView;
+        }
+
+        @Override
+        public View getInfoWindow(Marker marker){
+            return null;
+        }
+    }
+
+    /*
+     * class that handles infoWindow callback
+     *
+     */
+    private class InfoWindowRefresher implements com.squareup.picasso.Callback {
+        private Marker markerToRefresh = null;
+
+        public InfoWindowRefresher(Marker marker){
+            this.markerToRefresh = marker;
+        }
+
+        @Override
+        public void onSuccess() {
+            if (markerToRefresh != null && markerToRefresh.isInfoWindowShown()) {
+                markerToRefresh.hideInfoWindow();
+                markerToRefresh.showInfoWindow();
+            }
+        }
+
+        @Override
+        public void onError(){
+            Log.e(getClass().getSimpleName(), "Error loading thumbnail!");
+        }
+
+    }
+
     private static final int PERMISSIONS_REQUEST_FINE_LOCATION = 1;
+    public static final String URL_TO_VIEW = "group3.CSE110smartshop.URL_TO_VIEW";
     public static final String BASE_URL = "https://api.yelp.com/v3/";
     public static final String YELP_TOKEN =
             "Bearer z-wkW_0ij8grCGOBsXW2jivBrYrsGThT4FyWcyQYtmcHh7sYTDMfXu_ypDbY0vFWDOZ7uIRZKzxYLTctx8cdkjIlBhBqoaiMKyF2n7quen_6BEG_pBgrnMfwi6YWWHYx";
@@ -42,10 +143,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private double mLat, mLgn;
     private TextView mLatitudeText,mLongitudeText;
     private List<Business> businesses;
+    private HashMap<Marker, MarkerInfo> markerImages;
 
-    public void getAllBusiness() {
-
-    }
 
     protected void onStart() {
         mGoogleApiClient.connect();
@@ -57,12 +156,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onStop();
     }
 
+    private void startNewWebView(String url) {
+        if (!url.isEmpty()) {
+            Intent webViewIntent = new Intent(this, InfoWindowWebActivity.class);
+            webViewIntent.putExtra(URL_TO_VIEW, url);
+
+            startActivity(webViewIntent);
+
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         search_term = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
-        getAllBusiness();
+        markerImages = new HashMap<Marker, MarkerInfo>();
 
 
 
@@ -101,11 +210,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .build();
         }
 
+
+
+
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
     }
 
     @Override
@@ -152,23 +265,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
-        LatLng myLl = new LatLng(mLat,mLgn);
+        mMap.setInfoWindowAdapter(new SmartInfoWindowAdapter());
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                String url = markerImages.get(marker).webUrl;
+                startNewWebView(url);
+
+
+            }
+        });
+
+        LatLng myLl = new LatLng(32.8673,-117.209);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
         } else {
             // Show rationale and request permission.
         }
-        /*
-        Marker ucsdMarker = mMap.addMarker(new MarkerOptions()
-                .position(ucsd)
-                .title("Our Campus")
-                .snippet("2016")
-        );*/
+
         System.out.println("grabbing all businesses");
+        Gson gson = new GsonBuilder()
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .create();
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         YelpApiEndPointInterface apiService = retrofit.create(YelpApiEndPointInterface.class);
         Call<YelpParser> call = apiService.getBusinesses(YELP_TOKEN, search_term, 32.8672972, -117.209346);
@@ -179,16 +301,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     System.out.println("body is null");
                 }
                 businesses = response.body().getBusinesses();
+
                 for (int i = 0; i < businesses.size(); i++) {
                     LatLng ll = new LatLng(businesses.get(i).getCoordinates().getLatitude(),
                             businesses.get(i).getCoordinates().getLongitude());
-                    mMap.addMarker(new MarkerOptions()
+                    Marker marker = mMap.addMarker(new MarkerOptions()
                             .position(ll)
                             .title(businesses.get(i).
-                                    getName()).
-                                    snippet(businesses.get(i).
+                                    getName())
+                            .snippet(businesses.get(i).
                                             getDistance().intValue() + " meters away from you")
                     );
+                    MarkerInfo markerInfo = new MarkerInfo(businesses.get(i).getImageUrl(),
+                            businesses.get(i).getUrl(),
+                            businesses.get(i).getReviewCount(),
+                            businesses.get(i).getRating());
+                    markerImages.put(marker, markerInfo);
                 }
             }
 
