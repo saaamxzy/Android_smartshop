@@ -81,23 +81,30 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void searchNearby(View view) {
-
-        Intent intent = new Intent(this, MapsActivity.class);
         EditText editText = (EditText) findViewById(R.id.edit_message);
         String message = editText.getText().toString();
-        intent.putExtra(EXTRA_MESSAGE, message);
+        if(!message.isEmpty()) {
 
-        startActivity(intent);
+            Intent intent = new Intent(this, MapsActivity.class);
+            intent.putExtra(EXTRA_MESSAGE, message);
+
+            startActivity(intent);
+        }
+
+
+
 
     }
 
     public void searchOnline (View view){
-        Intent intent = new Intent(this, OnlineSearchActivity.class);
         EditText editText = (EditText) findViewById(R.id.edit_message);
         String message = editText.getText().toString();
-        intent.putExtra(EXTRA_MESSAGE, message);
+        if (!message.isEmpty()) {
+            Intent intent = new Intent(this, OnlineSearchActivity.class);
+            intent.putExtra(EXTRA_MESSAGE, message);
 
-        startActivity(intent);
+            startActivity(intent);
+        }
 
     }
 

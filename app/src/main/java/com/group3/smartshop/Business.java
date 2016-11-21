@@ -1,5 +1,7 @@
 package com.group3.smartshop;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -243,6 +245,7 @@ public class Business {
      * @return
      * The imageUrl
      */
+    @SerializedName("imageUrl")
     public String getImageUrl() {
         return imageUrl;
     }
@@ -250,8 +253,9 @@ public class Business {
     /**
      *
      * @param imageUrl
-     * The image_url
+     * The imageUrl
      */
+    @SerializedName("imageUrl")
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }

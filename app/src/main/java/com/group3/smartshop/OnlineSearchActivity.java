@@ -34,8 +34,8 @@ import android.content.res.Resources;
 
 public class OnlineSearchActivity extends AppCompatActivity {
     private String message;
-    ArrayList<String> list = new ArrayList<String>();
-    ArrayList<String> pics = new ArrayList<String>();
+    private ArrayList<String> list = new ArrayList<String>();
+    private ArrayList<String> pics = new ArrayList<String>();
 
     private RecyclerView recyclerView;
     private ProductAdapter adapter;
@@ -115,7 +115,17 @@ public class OnlineSearchActivity extends AppCompatActivity {
     }
 
     public Double getPrice (String price){
-        return Double.parseDouble(price.replaceAll(",", ""));
+        double correctPrice = 0;
+        try
+        {
+            correctPrice = Double.parseDouble(price.replaceAll(",", ""));
+        }
+        catch(Exception e)
+        {
+            String subPrice = price.substring(0,price.indexOf('.'));
+            correctPrice = Double.parseDouble(subPrice.replaceAll(",",""));
+        }
+        return correctPrice;
     }
 
     private void initToolbar() {
@@ -230,7 +240,11 @@ public class OnlineSearchActivity extends AppCompatActivity {
                 }
 
                 if (finalPrice.length() == 0) price = -1;
-                else price = getPrice(finalPrice);
+                else
+                {
+                    System.out.println("This is final price:\n\n\n" + finalPrice);
+                    price = getPrice(finalPrice);
+                }
 
 
                 Product pro;
