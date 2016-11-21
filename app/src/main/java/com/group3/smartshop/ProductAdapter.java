@@ -1,15 +1,20 @@
 package com.group3.smartshop;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.media.Image;
 import android.support.v4.widget.TextViewCompat;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,10 +60,37 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
     @Override
     public void onBindViewHolder (final MyViewHolder holder, int index){
         Product item = productList.get(index);
-        holder.productName.setText(item.getName());
+        String name = item.getName();
+        String tempLink = item.getLink();
+        if(tempLink.charAt(0) != 'h')
+        {
+          tempLink = "www.amazon"+tempLink;
+        }
+        final String link = tempLink;
+
+        holder.productName.setText(name);
+        holder.productName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(myContext,WebViewActivity.class);
+                intent.putExtra(OnlineSearchActivity.EXTRA_MESSAGE,link);
+                myContext.startActivity(intent);
+            }
+        });
+
+
         holder.price.setText("$" + item.getHowMuch());
 
+
         Glide.with(myContext).load(item.getImg()).into(holder.cardImage);
+        holder.cardImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(myContext,WebViewActivity.class);
+                intent.putExtra(OnlineSearchActivity.EXTRA_MESSAGE,link);
+                myContext.startActivity(intent);
+            }
+        });
 
         holder.favButton.setOnClickListener(new View.OnClickListener(){
             @Override

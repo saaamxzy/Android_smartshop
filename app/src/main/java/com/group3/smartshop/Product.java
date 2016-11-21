@@ -8,15 +8,18 @@ public class Product {
     private String name;
     private Double money;
     private String img;
+    private String link;
 
     public Product() {
     }
 
-    public Product(String name, Double money, String img) {
+    public Product(String name, Double money, String img, String link) {
         this.name = name;
         this.money = money;
         this.img = img;
+        this.link = link;
     }
+
 
     public void setName(String name) {
         this.name = name;
@@ -33,6 +36,8 @@ public class Product {
     public Double getHowMuch() {
         return money;
     }
+
+    public String getLink() {return link;}
 
     public void setTImg(String img) {
         this.img = img;

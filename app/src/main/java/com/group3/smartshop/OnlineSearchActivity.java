@@ -33,6 +33,7 @@ import java.util.List;
 import android.content.res.Resources;
 
 public class OnlineSearchActivity extends AppCompatActivity {
+    protected static final String EXTRA_MESSAGE = "";
     private String message;
     private ArrayList<String> list = new ArrayList<String>();
     private ArrayList<String> pics = new ArrayList<String>();
@@ -176,12 +177,18 @@ public class OnlineSearchActivity extends AppCompatActivity {
 
                 for(Element i: result) {
                     String word = i.text();
-                    list.add(word);
-                    //Elements link = i.getElementsByAttribute("href");
-                    //links.add(link.first().attr("href"));
-                    //System.out.println("The link: " + link.first().attr("href"));
-                }
+                    int index = word.indexOf('$');
 
+                    //when product has price
+                    if (index != -1) {
+                        list.add(word);
+                        Elements pic = i.select("img");
+                        pics.add(pic.first().attr("src"));
+                        Elements link = i.getElementsByAttribute("href");
+                        links.add(link.first().attr("href"));
+                    }
+                }
+/*
                 for (Element i : result.select("img")) {
                     String p = i.attr("src");
                     System.out.println("all: " + p);
@@ -191,7 +198,7 @@ public class OnlineSearchActivity extends AppCompatActivity {
                     }else{
                         continue;
                     }
-                }
+                }*/
             }catch(Exception e){e.printStackTrace();}
 
 
@@ -208,21 +215,24 @@ public class OnlineSearchActivity extends AppCompatActivity {
 //                    R.drawable.shopping_cart,
 //                    R.drawable.shopping_cart};
 
-            boolean cate = false;
+            //boolean cate = false;
 
-            for(int i = 0; i<10; ++i) {
+            for(int i = 0; i<10 && i<list.size(); ++i) {
                 String nameText = "";
                 String textPrice = "";
                 String finalPrice = "";
                 double price = 0.00;
 
                 int index = list.get(i).indexOf('$');
+                nameText = list.get(i).substring(0, index);
+                /*
                 if (index != -1) {
                     nameText = list.get(i).substring(0, index);
-                } else {
+                }
+                else {
                     cate = true;
                     continue;
-                }
+                }*/
 
                 if (list.get(i).charAt(index+1) == ' ') {
                     textPrice = list.get(i).substring(index + 2);
@@ -248,12 +258,7 @@ public class OnlineSearchActivity extends AppCompatActivity {
                     price = getPrice(finalPrice);
 
 
-                Product pro;
-                if (cate) {
-                    pro = new Product(nameText, price, pics.get(i-1));
-                }else {
-                    pro = new Product(nameText, price, pics.get(i));
-                }
+                Product pro = new Product(nameText, price, pics.get(i),links.get(i));
 
                 productList.add(pro);
             }

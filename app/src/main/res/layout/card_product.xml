@@ -24,6 +24,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/card_height"
                 android:id="@+id/card_image"
+                android:autoLink = "web"
                 android:clickable="true"
                 android:scaleType="fitXY"
                 android:background="?attr/selectableItemBackgroundBorderless"
@@ -33,8 +34,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/card_title"
+                android:clickable = "true"
                 android:layout_below="@id/card_image"
-
                 android:paddingRight="@dimen/padding"
                 android:paddingLeft="@dimen/padding"
                 android:paddingTop="@dimen/padding"
