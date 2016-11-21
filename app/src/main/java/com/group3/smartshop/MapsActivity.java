@@ -3,6 +3,7 @@ package com.group3.smartshop;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -20,6 +21,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -84,7 +86,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             TextView windowRating = (TextView)
                     smartContentsView.findViewById(R.id.infowindow_rating);
-            String rating = "Rating Score: " + Double.toString(markerImages.get(marker).rating);
+            double ratingDouble = markerImages.get(marker).rating;
+            String rating = "Rating Score: " + ratingDouble;
+
 
             windowRating.setText(rating);
 
@@ -135,7 +139,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public static final String URL_TO_VIEW = "group3.CSE110smartshop.URL_TO_VIEW";
     public static final String BASE_URL = "https://api.yelp.com/v3/";
     public static final String YELP_TOKEN =
-            "Bearer z-wkW_0ij8grCGOBsXW2jivBrYrsGThT4FyWcyQYtmcHh7sYTDMfXu_ypDbY0vFWDOZ7uIRZKzxYLTctx8cdkjIlBhBqoaiMKyF2n7quen_6BEG_pBgrnMfwi6YWWHYx";
+            "Bearer z-wkW_0ij8grCGOBsXW2jivBrYrsGThT4FyWcyQYtmcHh7sYTDMfXu_ypDbY0vFWDOZ7uIRZ" +
+                    "KzxYLTctx8cdkjIlBhBqoaiMKyF2n7quen_6BEG_pBgrnMfwi6YWWHYx";
     private String search_term;
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
@@ -293,7 +298,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
         YelpApiEndPointInterface apiService = retrofit.create(YelpApiEndPointInterface.class);
-        Call<YelpParser> call = apiService.getBusinesses(YELP_TOKEN, search_term, 32.8672972, -117.209346);
+        Call<YelpParser> call =
+                apiService.getBusinesses(YELP_TOKEN, search_term, 32.8672972, -117.209346);
         call.enqueue(new Callback<YelpParser>() {
             @Override
             public void onResponse(Call<YelpParser> call, Response<YelpParser> response) {
@@ -305,18 +311,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 for (int i = 0; i < businesses.size(); i++) {
                     LatLng ll = new LatLng(businesses.get(i).getCoordinates().getLatitude(),
                             businesses.get(i).getCoordinates().getLongitude());
-                    Marker marker = mMap.addMarker(new MarkerOptions()
-                            .position(ll)
-                            .title(businesses.get(i).
-                                    getName())
-                            .snippet(businesses.get(i).
-                                            getDistance().intValue() + " meters away from you")
-                    );
-                    MarkerInfo markerInfo = new MarkerInfo(businesses.get(i).getImageUrl(),
-                            businesses.get(i).getUrl(),
-                            businesses.get(i).getReviewCount(),
-                            businesses.get(i).getRating());
-                    markerImages.put(marker, markerInfo);
+                    Marker marker;
+                    if (i == 0) {
+                        marker = mMap.addMarker(new MarkerOptions()
+                                .position(ll)
+                                .title(businesses.get(i).
+                                        getName())
+                                .snippet(businesses.get(i).
+                                        getDistance().intValue() + " meters away from you")
+                                .icon(BitmapDescriptorFactory.
+                                        defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                        );
+                        
+                    } else {
+                        marker = mMap.addMarker(new MarkerOptions()
+                                .position(ll)
+                                .title(businesses.get(i).
+                                        getName())
+                                .snippet(businesses.get(i).
+                                        getDistance().intValue() + " meters away from you")
+                        );
+                    }
+                    if (marker != null) {
+                        MarkerInfo markerInfo = new MarkerInfo(businesses.get(i).getImageUrl(),
+                                businesses.get(i).getUrl(),
+                                businesses.get(i).getReviewCount(),
+                                businesses.get(i).getRating());
+                        markerImages.put(marker, markerInfo);
+                    }
                 }
             }
 
