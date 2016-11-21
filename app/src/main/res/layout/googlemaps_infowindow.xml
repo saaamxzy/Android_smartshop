@@ -23,7 +23,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/infowindowtitle"
-                android:textSize="12dp"
+                android:textSize="14dp"
                 android:textStyle="bold"/>
 
             <TextView
@@ -31,6 +31,20 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/infowindowdescription"
                 android:textSize="10dp"/>
+
+            <TextView
+                android:layout_gravity="bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/infowindow_rating"
+                android:textSize="11dp"/>
+
+            <TextView
+                android:layout_gravity="bottom"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/infowindow_numofratings"
+                android:textSize="11dp"/>
 
 
 

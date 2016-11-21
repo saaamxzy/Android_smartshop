@@ -23,6 +23,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.vision.text.Text;
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -37,9 +38,30 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/*
+ * Helper class to store useful info about a certain marker. Should be put into a hashMap by
+ * put(marker, MarkerInfo)
+ */
+class MarkerInfo {
+    public String imgUrl = "";
+    public String webUrl = "";
+    public int reviewCount = -1;
+    public double rating = -1;
+    MarkerInfo(String image, String web, int reviewNums, double rating) {
+        this.imgUrl = image;
+        this.webUrl = web;
+        this.reviewCount = reviewNums;
+        this.rating = rating;
+    }
+}
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
+
+
+    /*
+     * Adapter for InfoWindow
+     */
     class SmartInfoWindowAdapter implements GoogleMap.InfoWindowAdapter{
         private final View smartContentsView;
         SmartInfoWindowAdapter(){
@@ -55,10 +77,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             windowDescription.setText(marker.getSnippet());
             ImageView windowImage = (ImageView) smartContentsView.findViewById(R.id.infowindowimg);
 
-            String imgUrl = markerImages.get(marker);
+            String imgUrl = markerImages.get(marker).imgUrl;
             Picasso.with(getApplicationContext())
                     .load(imgUrl)
                     .into(windowImage, new InfoWindowRefresher(marker));
+
+            TextView windowRating = (TextView)
+                    smartContentsView.findViewById(R.id.infowindow_rating);
+            String rating = "Rating Score: " + Double.toString(markerImages.get(marker).rating);
+
+            windowRating.setText(rating);
+
+            TextView windowRatingCount =
+                    (TextView)smartContentsView.findViewById(R.id.infowindow_numofratings);
+
+            String numOfRating = "Total number of reviews: " +
+                    Integer.toString(markerImages.get(marker).reviewCount);
+            windowRatingCount.setText(numOfRating);
 
 
             return smartContentsView;
@@ -70,6 +105,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    /*
+     * class that handles infoWindow callback
+     *
+     */
     private class InfoWindowRefresher implements com.squareup.picasso.Callback {
         private Marker markerToRefresh = null;
 
@@ -93,6 +132,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private static final int PERMISSIONS_REQUEST_FINE_LOCATION = 1;
+    public static final String URL_TO_VIEW = "group3.CSE110smartshop.URL_TO_VIEW";
     public static final String BASE_URL = "https://api.yelp.com/v3/";
     public static final String YELP_TOKEN =
             "Bearer z-wkW_0ij8grCGOBsXW2jivBrYrsGThT4FyWcyQYtmcHh7sYTDMfXu_ypDbY0vFWDOZ7uIRZKzxYLTctx8cdkjIlBhBqoaiMKyF2n7quen_6BEG_pBgrnMfwi6YWWHYx";
@@ -103,7 +143,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private double mLat, mLgn;
     private TextView mLatitudeText,mLongitudeText;
     private List<Business> businesses;
-    private HashMap<Marker, String> markerImages;
+    private HashMap<Marker, MarkerInfo> markerImages;
 
 
     protected void onStart() {
@@ -116,12 +156,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onStop();
     }
 
+    private void startNewWebView(String url) {
+        if (!url.isEmpty()) {
+            Intent webViewIntent = new Intent(this, InfoWindowWebActivity.class);
+            webViewIntent.putExtra(URL_TO_VIEW, url);
+
+            startActivity(webViewIntent);
+
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = getIntent();
         search_term = intent.getStringExtra(MainActivity.EXTRA_MESSAGE);
-        markerImages = new HashMap<Marker, String>();
+        markerImages = new HashMap<Marker, MarkerInfo>();
 
 
 
@@ -160,11 +210,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     .build();
         }
 
+
+
+
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
     }
 
     @Override
@@ -212,6 +266,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.setInfoWindowAdapter(new SmartInfoWindowAdapter());
+        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+            @Override
+            public void onInfoWindowClick(Marker marker) {
+                String url = markerImages.get(marker).webUrl;
+                startNewWebView(url);
+
+
+            }
+        });
 
         LatLng myLl = new LatLng(32.8673,-117.209);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
@@ -249,7 +312,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             .snippet(businesses.get(i).
                                             getDistance().intValue() + " meters away from you")
                     );
-                    markerImages.put(marker, businesses.get(i).getImageUrl());
+                    MarkerInfo markerInfo = new MarkerInfo(businesses.get(i).getImageUrl(),
+                            businesses.get(i).getUrl(),
+                            businesses.get(i).getReviewCount(),
+                            businesses.get(i).getRating());
+                    markerImages.put(marker, markerInfo);
                 }
             }
 
