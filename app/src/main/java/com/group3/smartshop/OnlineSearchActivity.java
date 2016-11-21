@@ -36,6 +36,7 @@ public class OnlineSearchActivity extends AppCompatActivity {
     private String message;
     private ArrayList<String> list = new ArrayList<String>();
     private ArrayList<String> pics = new ArrayList<String>();
+    private ArrayList<String> links = new ArrayList<String>();
 
     private RecyclerView recyclerView;
     private ProductAdapter adapter;
@@ -176,6 +177,9 @@ public class OnlineSearchActivity extends AppCompatActivity {
                 for(Element i: result) {
                     String word = i.text();
                     list.add(word);
+                    //Elements link = i.getElementsByAttribute("href");
+                    //links.add(link.first().attr("href"));
+                    //System.out.println("The link: " + link.first().attr("href"));
                 }
 
                 for (Element i : result.select("img")) {
@@ -241,10 +245,7 @@ public class OnlineSearchActivity extends AppCompatActivity {
 
                 if (finalPrice.length() == 0) price = -1;
                 else
-                {
-                    System.out.println("This is final price:\n\n\n" + finalPrice);
                     price = getPrice(finalPrice);
-                }
 
 
                 Product pro;
