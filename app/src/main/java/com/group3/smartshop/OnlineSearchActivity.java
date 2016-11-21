@@ -171,7 +171,7 @@ public class OnlineSearchActivity extends AppCompatActivity {
                 for (Element i : result.select("img")) {
                     String p = i.attr("src");
                     System.out.println("all: " + p);
-                    if (p.contains("_AC_US160_.jpg")) {
+                    if (p.contains("_AC_")) {
                         pics.add(p);
                         System.out.println("true");
                     }else{
