@@ -23,7 +23,7 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 
 public class SignupActivity extends AppCompatActivity {
 
-    private EditText inputEmail, inputPassword, inputID;
+    private EditText inputID, inputEmail, inputPassword, inputPasswordA;
     private Button btnSignIn, btnSignUp, btnResetPassword;
     private ProgressBar progressBar;
     private FirebaseAuth auth;
@@ -42,6 +42,7 @@ public class SignupActivity extends AppCompatActivity {
         inputID = (EditText) findViewById(R.id.uid);
         inputEmail = (EditText) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
+        inputPasswordA = (EditText) findViewById(R.id.password_again);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         btnResetPassword = (Button) findViewById(R.id.btn_reset_password);
 
@@ -66,6 +67,7 @@ public class SignupActivity extends AppCompatActivity {
                 String userName = inputID.getText().toString().trim();
                 String email = inputEmail.getText().toString().trim();
                 String password = inputPassword.getText().toString().trim();
+                String pwdA = inputPasswordA.getText().toString().trim();
 
                 if (TextUtils.isEmpty(userName)){
                     Toast.makeText(getApplicationContext(), "Enter user ID!", Toast.LENGTH_SHORT).show();
@@ -84,6 +86,16 @@ public class SignupActivity extends AppCompatActivity {
 
                 if (password.length() < 6) {
                     Toast.makeText(getApplicationContext(), "Password too short, enter minimum 6 characters!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (TextUtils.isEmpty(pwdA)){
+                    Toast.makeText(getApplicationContext(), "Enter confirm password!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                if (!password.equals(pwdA)){
+                    Toast.makeText(getApplicationContext(), getString(R.string.not_match), Toast.LENGTH_SHORT).show();
                     return;
                 }
 

@@ -32,6 +32,8 @@
     <string name="title_activity_profile">Firebase</string>
     <string name="title_activity_login">Sign in</string>
     <string name="password">Password</string>
+    <string name="not_match">Password does not match the confirm password, try again!</string>
+    <string name="passwordagain">Confirm Password</string>
     <string name="send">Send</string>
     <string name="chang_name">Chang User Name</string>
     <string name="change_email">Change Email</string>
