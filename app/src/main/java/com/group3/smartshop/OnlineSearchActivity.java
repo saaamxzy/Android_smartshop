@@ -36,6 +36,7 @@ public class OnlineSearchActivity extends AppCompatActivity {
     protected static final String EXTRA_MESSAGE = "";
     private String message;
     private ArrayList<String> list = new ArrayList<String>();
+    private ArrayList<String> names = new ArrayList<String>();
     private ArrayList<String> pics = new ArrayList<String>();
     private ArrayList<String> links = new ArrayList<String>();
 
@@ -176,15 +177,29 @@ public class OnlineSearchActivity extends AppCompatActivity {
                 Elements result = doc.select("li[id^=result_]");
 
                 for(Element i: result) {
+                    Element resultForName = i.clone();
+                    Element resultForPic = i.clone();
+                    Element resultForLink = i.clone();
                     String word = i.text();
                     int index = word.indexOf('$');
-
                     //when product has price
                     if (index != -1) {
                         list.add(word);
-                        Elements pic = i.select("img");
-                        pics.add(pic.first().attr("src"));
-                        Elements link = i.getElementsByAttribute("href");
+                        Elements name = resultForName.select("h2");
+                        for(Element j: name)
+                        {
+                          if(j.attr("data-attribute") != "")
+                          {
+                              names.add(j.attr("data-attribute"));
+                              break;
+                          }
+                        }
+                        Elements pic = resultForPic.select("a[class^=a-link-normal a-text-normal]");
+                        Elements finalPic = pic.select("img");
+                        pics.add(finalPic.first().attr("src"));
+
+                        Elements link = resultForLink.select("a[class^=a-link-normal a-text-normal]");
+                        //Elements finalLink = link.select("href");
                         links.add(link.first().attr("href"));
                     }
                 }
@@ -217,7 +232,7 @@ public class OnlineSearchActivity extends AppCompatActivity {
 
             //boolean cate = false;
 
-            for(int i = 0; i<10 && i<list.size(); ++i) {
+            for(int i = 0; i<50 && i<list.size(); ++i) {
                 String nameText = "";
                 String textPrice = "";
                 String finalPrice = "";
@@ -258,7 +273,7 @@ public class OnlineSearchActivity extends AppCompatActivity {
                     price = getPrice(finalPrice);
 
 
-                Product pro = new Product(nameText, price, pics.get(i),links.get(i));
+                Product pro = new Product(names.get(i), price, pics.get(i),links.get(i));
 
                 productList.add(pro);
             }

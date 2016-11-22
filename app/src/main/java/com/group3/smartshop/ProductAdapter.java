@@ -65,7 +65,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
         if(tempLink.charAt(0) != 'h')
         {
           tempLink = "http://www.amazon.com"+tempLink;
-          System.out.println("This is tempLink: "+tempLink);
+          //System.out.println("This is tempLink: "+tempLink);
 
         }
         final String link = tempLink;
