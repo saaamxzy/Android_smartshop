@@ -62,7 +62,8 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
         Product item = productList.get(index);
         String name = item.getName();
         String tempLink = item.getLink();
-        if(tempLink.charAt(0) != 'h')
+        String origin = item.getOrigin();
+        if(tempLink.charAt(0) != 'h' && origin.equalsIgnoreCase("Amazon"))
         {
           tempLink = "http://www.amazon.com"+tempLink;
           //System.out.println("This is tempLink: "+tempLink);

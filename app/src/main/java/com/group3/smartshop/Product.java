@@ -9,15 +9,17 @@ public class Product {
     private Double money;
     private String img;
     private String link;
+    private String origin;
 
     public Product() {
     }
 
-    public Product(String name, Double money, String img, String link) {
+    public Product(String name, Double money, String img, String link, String origin) {
         this.name = name;
         this.money = money;
         this.img = img;
         this.link = link;
+        this.origin = origin;
     }
 
 
@@ -33,11 +35,15 @@ public class Product {
         this.money = m;
     }
 
-    public Double getHowMuch() {
-        return money;
-    }
+    public Double getHowMuch() {return money; }
+
+    public void setLink(String link) {this.link = link;}
 
     public String getLink() {return link;}
+
+    public void setOrigin(String origin) {this.origin = origin;}
+
+    public String getOrigin() {return origin;}
 
     public void setTImg(String img) {
         this.img = img;

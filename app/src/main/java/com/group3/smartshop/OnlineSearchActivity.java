@@ -40,6 +40,10 @@ public class OnlineSearchActivity extends AppCompatActivity {
     private ArrayList<String> pics = new ArrayList<String>();
     private ArrayList<String> links = new ArrayList<String>();
 
+    private ArrayList<String> ebayNames = new ArrayList<String>();
+    private ArrayList<String> ebayPics = new ArrayList<String>();
+    private ArrayList<String> ebayLinks = new ArrayList<String>();
+
     private RecyclerView recyclerView;
     private ProductAdapter adapter;
     private List<Product> productList;
@@ -167,12 +171,12 @@ public class OnlineSearchActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             String website = "https://www.amazon.com/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords="+message;
-
+            String ebayWebsite = "http://www.ebay.com/sch/i.html?_from=R40&_trksid=p2050601.m570.l1313.TR12.TRC2.A0.H0.Xiphone.TRS0&_nkw="+message;
             list.clear();
             pics.clear();
 
+            //get amazon info
             try {
-
                 Document doc = Jsoup.connect(website).get();
                 Elements result = doc.select("li[id^=result_]");
 
@@ -217,37 +221,51 @@ public class OnlineSearchActivity extends AppCompatActivity {
             }catch(Exception e){e.printStackTrace();}
 
 
-//            int[] pictures = new int[]{
-//                    R.drawable.shopping_cart,
-//                    R.drawable.shopping_cart,
-//                    R.drawable.shopping_cart,
-//                    R.drawable.shopping_cart,
-//                    R.drawable.shopping_cart,
-//                    R.drawable.shopping_cart,
-//                    R.drawable.shopping_cart,
-//                    R.drawable.shopping_cart,
-//                    R.drawable.shopping_cart,
-//                    R.drawable.shopping_cart,
-//                    R.drawable.shopping_cart};
+            //get ebay info
+            try {
+                Document doc = Jsoup.connect(ebayWebsite).get();
+                Elements result = doc.select("li[id^=item]");
+                for(Element i: result) {
+                    Element resultForNameAndPic = i.clone();
+                    Element resultForLink = i.clone();
 
-            //boolean cate = false;
+                    //when product has price
+                        Elements name = resultForNameAndPic.select("img");
+                        //ebayNames.add(name.select("img src").first().attr("alt"));
+                    for(Element j: name)
+                    {
+                        if(j.attr("src")!="") {
+                            ebayPics.add(j.attr("src"));
+                            ebayNames.add(j.attr("alt"));
+                            break;
+                        }
+                    }
 
+                    Elements link = resultForLink.select("h3");
+
+                        if(link.first().select("a").first().attr("href") != "")
+                        {
+                            ebayLinks.add(link.first().select("a").first().attr("href"));
+                        }
+
+                    /*
+                        Elements pic = resultForPic.select("a[class^=a-link-normal a-text-normal]");
+                        Elements finalPic = pic.select("img");
+                        pics.add(finalPic.first().attr("src"));
+
+                        Elements link = resultForLink.select("a[class^=a-link-normal a-text-normal]");
+                        //Elements finalLink = link.select("href");
+                        links.add(link.first().attr("href"));*/
+                }
+            }catch(Exception e){e.printStackTrace();}
+
+            //add amazon product to product obj
             for(int i = 0; i<50 && i<list.size(); ++i) {
-                String nameText = "";
                 String textPrice = "";
                 String finalPrice = "";
                 double price = 0.00;
 
                 int index = list.get(i).indexOf('$');
-                nameText = list.get(i).substring(0, index);
-                /*
-                if (index != -1) {
-                    nameText = list.get(i).substring(0, index);
-                }
-                else {
-                    cate = true;
-                    continue;
-                }*/
 
                 if (list.get(i).charAt(index+1) == ' ') {
                     textPrice = list.get(i).substring(index + 2);
@@ -273,8 +291,16 @@ public class OnlineSearchActivity extends AppCompatActivity {
                     price = getPrice(finalPrice);
 
 
-                Product pro = new Product(names.get(i), price, pics.get(i),links.get(i));
+                Product pro = new Product(names.get(i), price, pics.get(i),links.get(i), "Amazon");
 
+                productList.add(pro);
+            }
+
+            //add ebay product to product obj
+            for(int i = 0; i<50 && i<ebayNames.size();i++)
+            {
+                Product pro = new Product(ebayNames.get(i), 0.0, ebayPics.get(i),ebayLinks.get(i), "Ebay");
+                System.out.println(ebayLinks.get(i));
                 productList.add(pro);
             }
 
