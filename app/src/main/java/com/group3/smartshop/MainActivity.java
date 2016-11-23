@@ -19,8 +19,30 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.group3.smartshop.MapsActivity.BASE_URL;
+import static com.group3.smartshop.MapsActivity.YELP_TOKEN;
 
 
 public class MainActivity extends AppCompatActivity
@@ -32,9 +54,19 @@ public class MainActivity extends AppCompatActivity
     private NavigationView nvDrawer;
     private FirebaseAuth auth;
     private TextView name, email;
+    private ArrayList<Business> recommendations;
+    private List<Business> businesses;
 
     public final static String EXTRA_MESSAGE = "group3.CSE110smartshop.MESSAGE";
 
+
+    private ArrayList<Business> getRecommendations(List<Business> businesses, int num) {
+        ArrayList<Business> recommendations = new ArrayList<>(num);
+        for (int i = 0; i < num; ++i) {
+            recommendations.add(businesses.get(i));
+        }
+        return recommendations;
+    }
 
     @Override
     public void onFragmentInteraction(Uri uri){
@@ -78,6 +110,48 @@ public class MainActivity extends AppCompatActivity
         email = (TextView)header.findViewById(R.id.nav_email);
         name.setText(user.getDisplayName());
         email.setText(user.getEmail());
+
+        //Get recommendations nearby
+
+        LatLng myLl = new LatLng(32.8673,-117.209);
+
+        Gson gson = new GsonBuilder()
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .create();
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(BASE_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+        YelpApiEndPointInterface apiService = retrofit.create(YelpApiEndPointInterface.class);
+        Call<YelpParser> call =
+                apiService.getBusinesses(YELP_TOKEN, "shop", 32.8672972, -117.209346);
+        call.enqueue(new Callback<YelpParser>() {
+            @Override
+            public void onResponse(Call<YelpParser> call, Response<YelpParser> response) {
+                if (response.body() == null) {
+                    System.out.println("body is null");
+                }
+                businesses = response.body().getBusinesses();
+                Collections.sort(businesses, new BusinessComparator());
+                Collections.reverse(businesses);
+                recommendations = getRecommendations(businesses, 4);
+
+
+                for (Business b : recommendations) {
+                    System.out.println(b.getName());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<YelpParser> call, Throwable t) {
+                System.out.println("businesses not grabbed");
+                System.out.println(t.toString());
+            }
+
+        });
+
+
+
     }
 
     public void searchNearby(View view) {
@@ -163,7 +237,7 @@ public class MainActivity extends AppCompatActivity
 //            Fragment fragment = null;
 //            FragmentManager fragmentManager = getFragmentManager();
 //            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-        } else if (id == R.id.home) {
+        } else if (id == R.id.search) {
             Fragment fragment = new SearchFragment();
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();

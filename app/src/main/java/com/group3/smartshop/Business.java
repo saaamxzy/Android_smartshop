@@ -24,6 +24,7 @@ public class Business {
     private String imageUrl;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
+
     /**
      *
      * @return

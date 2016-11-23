@@ -31,6 +31,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -80,9 +81,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             ImageView windowImage = (ImageView) smartContentsView.findViewById(R.id.infowindowimg);
 
             String imgUrl = markerImages.get(marker).imgUrl;
-            Picasso.with(getApplicationContext())
-                    .load(imgUrl)
-                    .into(windowImage, new InfoWindowRefresher(marker));
+            if (imgUrl != null) {
+                Picasso.with(getApplicationContext())
+                        .load(imgUrl)
+                        .into(windowImage, new InfoWindowRefresher(marker));
+            }
 
             TextView windowRating = (TextView)
                     smartContentsView.findViewById(R.id.infowindow_rating);
@@ -149,6 +152,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private TextView mLatitudeText,mLongitudeText;
     private List<Business> businesses;
     private HashMap<Marker, MarkerInfo> markerImages;
+
 
 
     protected void onStart() {
@@ -289,7 +293,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // Show rationale and request permission.
         }
 
-        System.out.println("grabbing all businesses");
         Gson gson = new GsonBuilder()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .create();
@@ -322,7 +325,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 .icon(BitmapDescriptorFactory.
                                         defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
                         );
-                        
+
                     } else {
                         marker = mMap.addMarker(new MarkerOptions()
                                 .position(ll)
@@ -347,12 +350,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 System.out.println("businesses not grabbed");
                 System.out.println(t.toString());
             }
+
         });
-
-
-
-
-
+        findViewById(R.id.loadingPanel).setVisibility(View.GONE);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(myLl));
     }
 
