@@ -29,6 +29,7 @@ import org.jsoup.select.Elements;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PriorityQueue;
 
 import android.content.res.Resources;
 
@@ -43,11 +44,14 @@ public class OnlineSearchActivity extends AppCompatActivity {
     private ArrayList<String> ebayNames = new ArrayList<String>();
     private ArrayList<String> ebayPics = new ArrayList<String>();
     private ArrayList<String> ebayLinks = new ArrayList<String>();
+    private ArrayList<Double> ebayPrice = new ArrayList<Double>();
 
     private RecyclerView recyclerView;
     private ProductAdapter adapter;
     private List<Product> productList;
 
+    private ProductComparator comparator = new ProductComparator();
+    private PriorityQueue<Product> sortList = new PriorityQueue<Product>(100,comparator);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +62,7 @@ public class OnlineSearchActivity extends AppCompatActivity {
 
         initToolbar();
 
-        productList = new ArrayList<>();
+         productList = new ArrayList<>();
         recyclerView = (RecyclerView) findViewById(R.id.recycler);
         adapter = new ProductAdapter(this, productList);
 
@@ -171,7 +175,8 @@ public class OnlineSearchActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             String website = "https://www.amazon.com/s/ref=nb_sb_noss_2?url=search-alias%3Daps&field-keywords="+message;
-            String ebayWebsite = "http://www.ebay.com/sch/i.html?_from=R40&_trksid=p2050601.m570.l1313.TR12.TRC2.A0.H0.Xiphone.TRS0&_nkw="+message;
+            String ebayWebsite = "http://www.ebay.com/sch/i.html?_from=R40&_trksid=p2050601.m570.l1313.TR12.TRC2.A0.H0.Xiphone.TRS0&_nkw="+message+
+                    "&LH_BIN=1";
             list.clear();
             pics.clear();
 
@@ -228,10 +233,13 @@ public class OnlineSearchActivity extends AppCompatActivity {
                 for(Element i: result) {
                     Element resultForNameAndPic = i.clone();
                     Element resultForLink = i.clone();
+                    Element resultForlvprice = i.clone();
+                    Element resultForBIN = i.clone();
 
-                    //when product has price
-                        Elements name = resultForNameAndPic.select("img");
-                        //ebayNames.add(name.select("img src").first().attr("alt"));
+                    Elements name = resultForNameAndPic.select("img");
+                    //ebayNames.add(name.select("img src").first().attr("alt"));
+
+                    //get name and pic
                     for(Element j: name)
                     {
                         if(j.attr("src")!="") {
@@ -241,12 +249,59 @@ public class OnlineSearchActivity extends AppCompatActivity {
                         }
                     }
 
+                    //get link
                     Elements link = resultForLink.select("h3");
+                    if(link.first().select("a").first().attr("href") != "")
+                    {
+                        ebayLinks.add(link.first().select("a").first().attr("href"));
+                    }
 
-                        if(link.first().select("a").first().attr("href") != "")
-                        {
-                            ebayLinks.add(link.first().select("a").first().attr("href"));
+                    //get price
+                    Elements lvprice = resultForlvprice.select("li[class^=lvprice]");
+                    Elements BIN = resultForBIN.select("div[class^=bin]");
+                    if(!lvprice.isEmpty())
+                    {
+                        String range = lvprice.text();
+                        int indexOfDollarSign = range.indexOf('$');
+                        int indexOfComma = range.indexOf(',');
+                        int indexOfPeriod = range.indexOf('.');
+                        String price = "0.00";
+                        if(indexOfComma > 0 && indexOfComma < indexOfPeriod) {
+                            String price1 = range.substring(indexOfDollarSign + 1, indexOfComma);
+                            String price2 = range.substring(indexOfComma + 1, indexOfPeriod + 3);
+                            price = price1+price2;
                         }
+                        else
+                        {
+                            price = range.substring(indexOfDollarSign + 1, indexOfPeriod + 3);
+                        }
+                        ebayPrice.add(Double.parseDouble(price));
+                    }
+
+                    else if(!BIN.isEmpty())
+                    {
+                        String range = BIN.text();
+                        int indexOfDollarSign = range.indexOf('$');
+                        int indexOfComma = range.indexOf(',');
+                        int indexOfPeriod = range.indexOf('.');
+                        String price = "0.00";
+                        if(indexOfComma > 0 && indexOfComma < indexOfPeriod) {
+                            String price1 = range.substring(indexOfDollarSign + 1, indexOfComma);
+                            String price2 = range.substring(indexOfComma + 1, indexOfPeriod + 3);
+                            price = price1+price2;
+                        }
+                        else
+                        {
+                            price = range.substring(indexOfDollarSign + 1, indexOfPeriod + 3);
+                        }
+                        ebayPrice.add(Double.parseDouble(price));
+                    }
+
+                    else
+                    {
+                        ebayPrice.add(0.0);
+                    }
+
 
                     /*
                         Elements pic = resultForPic.select("a[class^=a-link-normal a-text-normal]");
@@ -293,17 +348,24 @@ public class OnlineSearchActivity extends AppCompatActivity {
 
                 Product pro = new Product(names.get(i), price, pics.get(i),links.get(i), "Amazon");
 
-                productList.add(pro);
+                sortList.add(pro);
+                //productList.add(pro);
             }
 
             //add ebay product to product obj
             for(int i = 0; i<50 && i<ebayNames.size();i++)
             {
-                Product pro = new Product(ebayNames.get(i), 0.0, ebayPics.get(i),ebayLinks.get(i), "Ebay");
-                System.out.println(ebayLinks.get(i));
-                productList.add(pro);
+                Product pro = new Product(ebayNames.get(i), ebayPrice.get(i), ebayPics.get(i),ebayLinks.get(i), "Ebay");
+                sortList.add(pro);
+                //productList.add(pro);
             }
 
+            //add sorted list to product list
+            while(!sortList.isEmpty())
+            {
+                System.out.println("got here!");
+               productList.add(sortList.poll());
+            }
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
