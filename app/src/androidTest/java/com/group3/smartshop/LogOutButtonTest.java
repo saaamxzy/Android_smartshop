@@ -1,9 +1,9 @@
 package com.group3.smartshop;
 
 /*  Scenario Test:
- *      Given log in interface,
- *      when i type email and password, and click on log in
- *      Then i can log in APP
+ *      Given user profile interface,
+ *      when i click on "LOG OUT",
+ *      Then i will log out my account.
  */
 
 
@@ -30,19 +30,22 @@ import static android.support.test.espresso.action.ViewActions.pressImeActionBut
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
+import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withParent;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.allOf;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class LoginActivityTest {
+public class LogOutButtonTest {
 
     @Rule
     public ActivityTestRule<LoginActivity> mActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
     @Test
-    public void loginActivityTest() {
+    public void logOutButtonTest() {
         ViewInteraction appCompatEditText = onView(
                 allOf(withId(R.id.email), isDisplayed()));
         appCompatEditText.perform(replaceText("xiz266@ucsd.edu"), closeSoftKeyboard());
@@ -51,19 +54,43 @@ public class LoginActivityTest {
                 allOf(withId(R.id.password), isDisplayed()));
         appCompatEditText2.perform(replaceText("Xl.3635"), closeSoftKeyboard());
 
-        ViewInteraction button = onView(
-                allOf(withId(R.id.btn_login),
-                        childAtPosition(
-                                childAtPosition(
-                                        IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class),
-                                        0),
-                                3),
-                        isDisplayed()));
-        button.check(matches(isDisplayed()));
+        ViewInteraction appCompatEditText3 = onView(
+                allOf(withId(R.id.password), withText("Xl.3635"), isDisplayed()));
+        appCompatEditText3.perform(pressImeActionButton());
+
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.btn_login), withText("LOGIN"), isDisplayed()));
         appCompatButton.perform(click());
 
+        ViewInteraction appCompatImageButton = onView(
+                allOf(withContentDescription("Open navigation drawer"),
+                        withParent(allOf(withId(R.id.toolbar),
+                                withParent(withId(R.id.app_bar)))),
+                        isDisplayed()));
+        appCompatImageButton.perform(click());
+
+        ViewInteraction appCompatCheckedTextView = onView(
+                allOf(withId(R.id.design_menu_item_text), withText("Search"), isDisplayed()));
+        appCompatCheckedTextView.perform(click());
+
+        ViewInteraction appCompatButton2 = onView(
+                allOf(withId(R.id.login), withText("Profile"), isDisplayed()));
+        appCompatButton2.perform(click());
+
+
+        ViewInteraction button = onView(
+                allOf(withId(R.id.sign_out),
+                        childAtPosition(
+                                childAtPosition(
+                                        IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class),
+                                        2),
+                                5),
+                        isDisplayed()));
+        button.check(matches(isDisplayed()));
+
+        ViewInteraction appCompatButton3 = onView(
+                allOf(withId(R.id.sign_out), withText("Sign Out"), isDisplayed()));
+        appCompatButton3.perform(click());
 
     }
 

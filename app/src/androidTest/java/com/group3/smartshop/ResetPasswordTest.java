@@ -1,11 +1,10 @@
 package com.group3.smartshop;
 
 /*  Scenario Test:
- *      Given log in interface,
- *      when i type email and password, and click on log in
- *      Then i can log in APP
+ *      Given log in User interface,
+ *      when i click on forget password,
+ *      Then it shows up instructions and asks me enter registered email inorder to reset password
  */
-
 
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
@@ -26,7 +25,6 @@ import org.junit.runner.RunWith;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.pressImeActionButton;
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -36,34 +34,34 @@ import static org.hamcrest.Matchers.allOf;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class LoginActivityTest {
+public class ResetPasswordTest {
 
     @Rule
     public ActivityTestRule<LoginActivity> mActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
     @Test
-    public void loginActivityTest() {
+    public void resetPasswordTest() {
+        ViewInteraction appCompatButton = onView(
+                allOf(withId(R.id.btn_reset_password), withText("Forgot your password?"), isDisplayed()));
+        appCompatButton.perform(click());
+
         ViewInteraction appCompatEditText = onView(
                 allOf(withId(R.id.email), isDisplayed()));
         appCompatEditText.perform(replaceText("xiz266@ucsd.edu"), closeSoftKeyboard());
 
-        ViewInteraction appCompatEditText2 = onView(
-                allOf(withId(R.id.password), isDisplayed()));
-        appCompatEditText2.perform(replaceText("Xl.3635"), closeSoftKeyboard());
-
         ViewInteraction button = onView(
-                allOf(withId(R.id.btn_login),
+                allOf(withId(R.id.btn_reset_password),
                         childAtPosition(
                                 childAtPosition(
                                         IsInstanceOf.<View>instanceOf(android.view.ViewGroup.class),
                                         0),
-                                3),
+                                4),
                         isDisplayed()));
         button.check(matches(isDisplayed()));
-        ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.btn_login), withText("LOGIN"), isDisplayed()));
-        appCompatButton.perform(click());
 
+        ViewInteraction appCompatButton2 = onView(
+                allOf(withId(R.id.btn_reset_password), withText("Reset Password"), isDisplayed()));
+        appCompatButton2.perform(click());
 
     }
 

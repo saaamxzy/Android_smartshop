@@ -70,7 +70,7 @@ public class LocalSearchTest1 {
         appCompatImageButton.perform(click());
 
         ViewInteraction appCompatCheckedTextView = onView(
-                allOf(withId(R.id.design_menu_item_text), withText("Home"), isDisplayed()));
+                allOf(withId(R.id.design_menu_item_text), withText("Search"), isDisplayed()));
         appCompatCheckedTextView.perform(click());
 
         ViewInteraction appCompatEditText4 = onView(
