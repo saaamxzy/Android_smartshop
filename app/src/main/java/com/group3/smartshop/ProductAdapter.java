@@ -82,7 +82,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
         });
 
 
-        holder.price.setText("$" + item.getHowMuch());
+        holder.price.setText("$" + item.getHowMuch() + "\n" + "Sell by " + item.getOrigin());
 
 
         Glide.with(myContext).load(item.getImg()).into(holder.cardImage);
