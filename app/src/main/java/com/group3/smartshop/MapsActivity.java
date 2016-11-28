@@ -6,9 +6,15 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -81,7 +87,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             ImageView windowImage = (ImageView) smartContentsView.findViewById(R.id.infowindowimg);
 
             String imgUrl = markerImages.get(marker).imgUrl;
-            if (imgUrl != null) {
+            if (imgUrl != null && imgUrl != "") {
                 Picasso.with(getApplicationContext())
                         .load(imgUrl)
                         .into(windowImage, new InfoWindowRefresher(marker));
@@ -155,6 +161,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
 
+
     protected void onStart() {
         mGoogleApiClient.connect();
         super.onStart();
@@ -223,10 +230,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
         setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
 
     }
 
@@ -242,6 +245,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 mLat = mLastLocation.getLatitude();
                 mLgn = mLastLocation.getLongitude();
+                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.map);
+                mapFragment.getMapAsync(this);
             }
         } else {
             // Show rationale and request permission.
@@ -271,7 +277,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
+        System.out.println("my location in onMapReady: " + mLat + ", " + mLgn);
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.setInfoWindowAdapter(new SmartInfoWindowAdapter());
@@ -280,12 +286,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onInfoWindowClick(Marker marker) {
                 String url = markerImages.get(marker).webUrl;
                 startNewWebView(url);
-
-
             }
         });
 
-        LatLng myLl = new LatLng(32.8673,-117.209);
+        LatLng myLl = new LatLng(mLat,mLgn);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
@@ -300,9 +304,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
+
         YelpApiEndPointInterface apiService = retrofit.create(YelpApiEndPointInterface.class);
         Call<YelpParser> call =
-                apiService.getBusinesses(YELP_TOKEN, search_term, 32.8672972, -117.209346);
+                apiService.getBusinesses(YELP_TOKEN, search_term, mLat, mLgn);
         call.enqueue(new Callback<YelpParser>() {
             @Override
             public void onResponse(Call<YelpParser> call, Response<YelpParser> response) {
