@@ -83,7 +83,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
 
 
         if (item.getExpensive() !=  null){
-            holder.price.setText(item.getExpensive() + "\n" + "Sell by " + item.getOrigin());
+            holder.price.setText(item.getExpensive());
         }else {
             holder.price.setText("$" + item.getHowMuch() + "\n" + "Sell by " + item.getOrigin());
         }
