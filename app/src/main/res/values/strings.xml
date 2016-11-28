@@ -35,7 +35,7 @@
     <string name="not_match">Password does not match the confirm password, try again!</string>
     <string name="passwordagain">Confirm Password</string>
     <string name="send">Send</string>
-    <string name="chang_name">Chang User Name</string>
+    <string name="chang_name">Change User Name</string>
     <string name="change_email">Change Email</string>
     <string name="change_password">Change Password</string>
     <string name="send_password_reset_email">Send Password reset email</string>

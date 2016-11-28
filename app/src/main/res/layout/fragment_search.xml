@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/welcome_cover"
     tools:context="com.group3.smartshop.SearchFragment">
 
 
@@ -23,21 +24,33 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@string/menu"
+            android:onClick="profileButton"
+            android:id="@+id/profile_test"
+            android:layout_alignParentBottom="true"
+            android:layout_alignLeft="@+id/edit_message"
+            android:layout_alignStart="@+id/edit_message"
+            android:layout_marginBottom="81dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="@string/button_nearby"
             android:onClick="searchNearby"
             android:id="@+id/button_nearby"
-            android:layout_alignBaseline="@+id/button_online"
-            android:layout_alignBottom="@+id/button_online"
+            android:layout_below="@+id/edit_message"
             android:layout_toLeftOf="@+id/button_online"
-            android:layout_toStartOf="@+id/button_online" />
+            android:layout_toStartOf="@+id/button_online"
+            android:layout_marginRight="26dp"
+            android:layout_marginEnd="26dp" />
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/button_online"
             android:onClick="searchOnline"
-            android:layout_marginRight="47dp"
-            android:layout_marginEnd="47dp"
+            android:layout_marginRight="37dp"
+            android:layout_marginEnd="37dp"
             android:id="@+id/button_online"
             android:layout_below="@+id/edit_message"
             android:layout_alignRight="@+id/edit_message"
@@ -49,19 +62,12 @@
             android:text="RECOMMENDATION"
             android:onClick="recButton"
             android:id="@+id/rec_test"
-            android:layout_alignParentTop="true"
-            android:layout_toRightOf="@+id/button_nearby"
-            android:layout_toEndOf="@+id/button_nearby" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/menu"
-            android:onClick="profileButton"
-            android:id="@+id/profile_test"
-            android:layout_alignParentTop="true"
-            android:layout_alignLeft="@+id/edit_message"
-            android:layout_alignStart="@+id/edit_message" />
+            android:layout_alignBaseline="@+id/profile_test"
+            android:layout_alignBottom="@+id/profile_test"
+            android:layout_toRightOf="@+id/profile_test"
+            android:layout_toEndOf="@+id/profile_test"
+            android:layout_marginLeft="18dp"
+            android:layout_marginStart="18dp" />
 
 
     </RelativeLayout>
