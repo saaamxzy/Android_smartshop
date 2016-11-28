@@ -10,6 +10,7 @@ public class Product {
     private String img;
     private String link;
     private String origin;
+    private String expensive;
 
     public Product() {
     }
@@ -22,6 +23,22 @@ public class Product {
         this.origin = origin;
     }
 
+    public Product (String name, String expensive, String img, String link, String origin){
+        this.name = name;
+        this.expensive = expensive;
+        this.img = img;
+        this.link = link;
+        this.origin = origin;
+    }
+
+
+    public void setExpensive (String exp){
+        this.expensive = exp;
+    }
+
+    public String getExpensive (){
+        return this.expensive;
+    }
 
     public void setName(String name) {
         this.name = name;

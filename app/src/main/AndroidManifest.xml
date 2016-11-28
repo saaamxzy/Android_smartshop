@@ -38,6 +38,13 @@
             </intent-filter>
         </activity>
 
+
+        <!-- main activity -->
+        <activity
+            android:name=".Recommendation"
+            android:label="@string/Rec"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <!-- main activity -->
         <activity
             android:name=".MainActivity"
