@@ -1,11 +1,10 @@
 package com.group3.smartshop;
 
 /*
- *  Scenario Test: Online search test 1
- *  Gvien i am at main page
- *  when i enter macbook on the search bar
- *  and click on Online search button
- *  Then App will show me the result from online
+ *  Scenario Test:
+ *  Given i am at main page,
+ *  when i click on Menu button
+ *  Then App will direct me to menu page
  */
 
 import android.support.test.espresso.ViewInteraction;
@@ -27,7 +26,6 @@ import org.junit.runner.RunWith;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.pressImeActionButton;
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -39,13 +37,13 @@ import static org.hamcrest.Matchers.allOf;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class OnlineSearchTest1 {
+public class MenuButtonTest {
 
     @Rule
     public ActivityTestRule<LoginActivity> mActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
     @Test
-    public void onlineSearchTest1() {
+    public void menuButtonTest() {
         ViewInteraction appCompatEditText = onView(
                 allOf(withId(R.id.email), isDisplayed()));
         appCompatEditText.perform(replaceText("xiz266@ucsd.edu"), closeSoftKeyboard());
@@ -54,17 +52,14 @@ public class OnlineSearchTest1 {
                 allOf(withId(R.id.password), isDisplayed()));
         appCompatEditText2.perform(replaceText("Xl.3635"), closeSoftKeyboard());
 
-        ViewInteraction appCompatEditText3 = onView(
-                allOf(withId(R.id.password), withText("Xl.3635"), isDisplayed()));
-        appCompatEditText3.perform(pressImeActionButton());
-
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.btn_login), withText("LOGIN"), isDisplayed()));
         appCompatButton.perform(click());
 
+
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
-                        withParent(allOf(withId(R.id.toolbar),
+                        withParent(allOf(withId(R.id.toolbar_main),
                                 withParent(withId(R.id.app_bar)))),
                         isDisplayed()));
         appCompatImageButton.perform(click());
@@ -73,22 +68,17 @@ public class OnlineSearchTest1 {
                 allOf(withId(R.id.design_menu_item_text), withText("Search"), isDisplayed()));
         appCompatCheckedTextView.perform(click());
 
-        ViewInteraction appCompatEditText4 = onView(
-                allOf(withId(R.id.edit_message), isDisplayed()));
-        appCompatEditText4.perform(replaceText("macbook"), closeSoftKeyboard());
-
         ViewInteraction button = onView(
-                allOf(withId(R.id.button_online),
+                allOf(withId(R.id.profile_test),
                         childAtPosition(
                                 childAtPosition(
                                         IsInstanceOf.<View>instanceOf(android.widget.FrameLayout.class),
                                         0),
-                                2),
+                                3),
                         isDisplayed()));
-        button.check(matches(isDisplayed()));
 
         ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.button_online), withText("ONLINE"), isDisplayed()));
+                allOf(withId(R.id.profile_test), withText("Menu"), isDisplayed()));
         appCompatButton2.perform(click());
 
     }

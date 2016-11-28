@@ -1,12 +1,5 @@
 package com.group3.smartshop;
 
-/*  Scenario Test:
- *      Given user profile interface,
- *      when i click on "CHANGE PASSWORD" button,
- *      Then App will require me to enter a password, and i am able to change password.
- */
-
-
 
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
@@ -30,13 +23,13 @@ import static org.hamcrest.Matchers.allOf;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class ChangePasswordTest {
+public class ButtonTest {
 
     @Rule
     public ActivityTestRule<LoginActivity> mActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
     @Test
-    public void changePasswordTest() {
+    public void buttonTest() {
         ViewInteraction appCompatEditText = onView(
                 allOf(withId(R.id.email), isDisplayed()));
         appCompatEditText.perform(replaceText("xiz266@ucsd.edu"), closeSoftKeyboard());
@@ -63,10 +56,6 @@ public class ChangePasswordTest {
         ViewInteraction appCompatButton2 = onView(
                 allOf(withId(R.id.profile_test), withText("Menu"), isDisplayed()));
         appCompatButton2.perform(click());
-
-        ViewInteraction appCompatButton3 = onView(
-                allOf(withId(R.id.change_password_button), withText("Change Password"), isDisplayed()));
-        appCompatButton3.perform(click());
 
     }
 

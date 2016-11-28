@@ -70,7 +70,7 @@ public class MainMenue_HomeTest {
         ViewInteraction imageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
                         childAtPosition(
-                                allOf(withId(R.id.toolbar),
+                                allOf(withId(R.id.toolbar_main),
                                         childAtPosition(
                                                 withId(R.id.app_bar),
                                                 0)),
@@ -80,7 +80,7 @@ public class MainMenue_HomeTest {
 
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
-                        withParent(allOf(withId(R.id.toolbar),
+                        withParent(allOf(withId(R.id.toolbar_main),
                                 withParent(withId(R.id.app_bar)))),
                         isDisplayed()));
         appCompatImageButton.perform(click());

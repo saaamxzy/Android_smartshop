@@ -1,12 +1,12 @@
 package com.group3.smartshop;
 
 /*
- *  Scenario Test:
- *  Given i am at main page,
- *  when i click on Prifile button
- *  Then App will direct me to profile page
+ *  Scenario Test: Online search test 1
+ *  Gvien i am at main page
+ *  when i enter macbook on the search bar
+ *  and click on Online search button
+ *  Then App will show me the result from online
  */
-
 
 import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
@@ -19,6 +19,7 @@ import android.view.ViewParent;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.hamcrest.core.IsInstanceOf;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +27,6 @@ import org.junit.runner.RunWith;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.closeSoftKeyboard;
-import static android.support.test.espresso.action.ViewActions.pressImeActionButton;
 import static android.support.test.espresso.action.ViewActions.replaceText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
@@ -38,13 +38,13 @@ import static org.hamcrest.Matchers.allOf;
 
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class ProfileButtonTest {
+public class OnlineSearchTest {
 
     @Rule
     public ActivityTestRule<LoginActivity> mActivityTestRule = new ActivityTestRule<>(LoginActivity.class);
 
     @Test
-    public void profileButtonTest() {
+    public void onlineSearchTest() {
         ViewInteraction appCompatEditText = onView(
                 allOf(withId(R.id.email), isDisplayed()));
         appCompatEditText.perform(replaceText("xiz266@ucsd.edu"), closeSoftKeyboard());
@@ -53,17 +53,13 @@ public class ProfileButtonTest {
                 allOf(withId(R.id.password), isDisplayed()));
         appCompatEditText2.perform(replaceText("Xl.3635"), closeSoftKeyboard());
 
-        ViewInteraction appCompatEditText3 = onView(
-                allOf(withId(R.id.password), withText("Xl.3635"), isDisplayed()));
-        appCompatEditText3.perform(pressImeActionButton());
-
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.btn_login), withText("LOGIN"), isDisplayed()));
         appCompatButton.perform(click());
 
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
-                        withParent(allOf(withId(R.id.toolbar),
+                        withParent(allOf(withId(R.id.toolbar_main),
                                 withParent(withId(R.id.app_bar)))),
                         isDisplayed()));
         appCompatImageButton.perform(click());
@@ -72,18 +68,22 @@ public class ProfileButtonTest {
                 allOf(withId(R.id.design_menu_item_text), withText("Search"), isDisplayed()));
         appCompatCheckedTextView.perform(click());
 
+        ViewInteraction appCompatEditText3 = onView(
+                allOf(withId(R.id.edit_message), isDisplayed()));
+        appCompatEditText3.perform(replaceText("macbook"), closeSoftKeyboard());
+
         ViewInteraction button = onView(
-                allOf(withId(R.id.login),
+                allOf(withId(R.id.button_online),
                         childAtPosition(
                                 childAtPosition(
-                                        withId(R.id.content_frame),
+                                        IsInstanceOf.<View>instanceOf(android.widget.FrameLayout.class),
                                         0),
-                                1),
+                                2),
                         isDisplayed()));
-        button.check(matches(isDisplayed()));
+
 
         ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.login), withText("Profile"), isDisplayed()));
+                allOf(withId(R.id.button_online), withText("ONLINE"), isDisplayed()));
         appCompatButton2.perform(click());
 
     }

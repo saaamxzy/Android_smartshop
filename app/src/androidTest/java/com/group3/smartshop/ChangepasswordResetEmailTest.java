@@ -50,7 +50,7 @@ public class ChangepasswordResetEmailTest {
 
         ViewInteraction appCompatImageButton = onView(
                 allOf(withContentDescription("Open navigation drawer"),
-                        withParent(allOf(withId(R.id.toolbar),
+                        withParent(allOf(withId(R.id.toolbar_main),
                                 withParent(withId(R.id.app_bar)))),
                         isDisplayed()));
         appCompatImageButton.perform(click());
@@ -60,7 +60,7 @@ public class ChangepasswordResetEmailTest {
         appCompatCheckedTextView.perform(click());
 
         ViewInteraction appCompatButton2 = onView(
-                allOf(withId(R.id.login), withText("Profile"), isDisplayed()));
+                allOf(withId(R.id.profile_test), withText("Menu"), isDisplayed()));
         appCompatButton2.perform(click());
 
         ViewInteraction appCompatButton3 = onView(
