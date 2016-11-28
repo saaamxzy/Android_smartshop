@@ -240,9 +240,7 @@ public class MainActivity extends AppCompatActivity
 //            Fragment fragment = new SearchFragment();
 //            FragmentManager fragmentManager = getFragmentManager();
 //            fragmentManager.beginTransaction().replace(R.id.recommend_frame, fragment).commit();
-        }else if (id == R.id.fav) {
-
-        } else if (id == R.id.nav_profile) {
+        }else if (id == R.id.nav_profile) {
 //            Fragment fragment = new SearchFragment();
 //            FragmentManager fragmentManager = getFragmentManager();
 //            fragmentManager.beginTransaction().replace(R.id.nav_profile, fragment).commit();
