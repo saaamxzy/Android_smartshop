@@ -6,8 +6,6 @@
 
 
     <RelativeLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="horizontal">
@@ -17,6 +15,8 @@
             android:layout_height="wrap_content"
             android:hint="@string/edit_message"
             android:layout_marginTop="80dp"
+            android:textColorHint="@color/white"
+            android:textColor="@color/white"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true" />
 
@@ -43,19 +43,27 @@
             android:layout_alignRight="@+id/edit_message"
             android:layout_alignEnd="@+id/edit_message" />
 
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="RECOMMENDATION"
+            android:onClick="recButton"
+            android:id="@+id/rec_test"
+            android:layout_alignParentTop="true"
+            android:layout_toRightOf="@+id/button_nearby"
+            android:layout_toEndOf="@+id/button_nearby" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/menu"
+            android:onClick="profileButton"
+            android:id="@+id/profile_test"
+            android:layout_alignParentTop="true"
+            android:layout_alignLeft="@+id/edit_message"
+            android:layout_alignStart="@+id/edit_message" />
 
 
     </RelativeLayout>
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/menu"
-        android:onClick="loginButton"
-        android:layout_marginRight="47dp"
-        android:layout_marginEnd="47dp"
-        android:id="@+id/login"
-        android:layout_below="@+id/edit_message"
-        android:layout_alignRight="@+id/edit_message"
-        android:layout_alignEnd="@+id/edit_message" />
 </FrameLayout>

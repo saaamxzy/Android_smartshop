@@ -10,6 +10,7 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+//import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -19,7 +20,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -31,6 +32,7 @@ import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import retrofit2.Call;
@@ -58,13 +60,13 @@ public class MainActivity extends AppCompatActivity
     public final static String EXTRA_MESSAGE = "group3.CSE110smartshop.MESSAGE";
 
 
-    private ArrayList<Business> getRecommendations(List<Business> businesses, int num) {
-        ArrayList<Business> recommendations = new ArrayList<>(num);
-        for (int i = 0; i < num; ++i) {
-            recommendations.add(businesses.get(i));
-        }
-        return recommendations;
-    }
+//    private ArrayList<Business> getRecommendations(List<Business> businesses, int num) {
+//        ArrayList<Business> recommendations = new ArrayList<>(num);
+//        for (int i = 0; i < num; ++i) {
+//            recommendations.add(businesses.get(i));
+//        }
+//        return recommendations;
+//    }
 
     @Override
     public void onFragmentInteraction(Uri uri){
@@ -109,44 +111,44 @@ public class MainActivity extends AppCompatActivity
         name.setText(user.getDisplayName());
         email.setText(user.getEmail());
 
-        //Get recommendations nearby
-
-        LatLng myLl = new LatLng(32.8673,-117.209);
-
-        Gson gson = new GsonBuilder()
-                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                .create();
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-        YelpApiEndPointInterface apiService = retrofit.create(YelpApiEndPointInterface.class);
-        Call<YelpParser> call =
-                apiService.getBusinesses(YELP_TOKEN, "shop", 32.8672972, -117.209346);
-        call.enqueue(new Callback<YelpParser>() {
-            @Override
-            public void onResponse(Call<YelpParser> call, Response<YelpParser> response) {
-                if (response.body() == null) {
-                    System.out.println("body is null");
-                }
-                businesses = response.body().getBusinesses();
-                Collections.sort(businesses, new BusinessComparator());
-                Collections.reverse(businesses);
-                recommendations = getRecommendations(businesses, 4);
-
-
-
-            }
-
-            @Override
-            public void onFailure(Call<YelpParser> call, Throwable t) {
-                System.out.println("businesses not grabbed");
-                System.out.println(t.toString());
-            }
-
-        });
-
-
+//        //Get recommendations nearby
+//
+//        LatLng myLl = new LatLng(32.8673,-117.209);
+//
+//        Gson gson = new GsonBuilder()
+//                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+//                .create();
+//        Retrofit retrofit = new Retrofit.Builder()
+//                .baseUrl(BASE_URL)
+//                .addConverterFactory(GsonConverterFactory.create(gson))
+//                .build();
+//        YelpApiEndPointInterface apiService = retrofit.create(YelpApiEndPointInterface.class);
+//        Call<YelpParser> call =
+//                apiService.getBusinesses(YELP_TOKEN, "shop", 32.8672972, -117.209346);
+//        call.enqueue(new Callback<YelpParser>() {
+//            @Override
+//            public void onResponse(Call<YelpParser> call, Response<YelpParser> response) {
+//                if (response.body() == null) {
+//                    System.out.println("body is null");
+//                }
+//                businesses = response.body().getBusinesses();
+//                Collections.sort(businesses, new BusinessComparator());
+//                Collections.reverse(businesses);
+//                recommendations = getRecommendations(businesses, 4);
+//
+//
+//                for (Business b : recommendations) {
+//                    System.out.println(b.getName());
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<YelpParser> call, Throwable t) {
+//                System.out.println("businesses not grabbed");
+//                System.out.println(t.toString());
+//            }
+//
+//        });
 
     }
 
@@ -160,10 +162,6 @@ public class MainActivity extends AppCompatActivity
 
             startActivity(intent);
         }
-
-
-
-
     }
 
     public void searchOnline (View view){
@@ -175,12 +173,17 @@ public class MainActivity extends AppCompatActivity
 
             startActivity(intent);
         }
-
     }
 
-    public void loginButton (View view){
+    public void profileButton (View view){
 
         Intent intent = new Intent (this, myProfileActivity.class);
+        startActivity(intent);
+    }
+
+    public void recButton (View view){
+
+        Intent intent = new Intent (this, Recommendation.class);
         startActivity(intent);
     }
 
@@ -229,19 +232,15 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.login) {
-//            Fragment fragment = null;
-//            FragmentManager fragmentManager = getFragmentManager();
-//            fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-        } else if (id == R.id.search) {
+        if (id == R.id.search) {
             Fragment fragment = new SearchFragment();
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
         } else if (id == R.id.recommendations) {
-
-        } else if (id == R.id.settings) {
-
-        } else if (id == R.id.fav) {
+//            Fragment fragment = new SearchFragment();
+//            FragmentManager fragmentManager = getFragmentManager();
+//            fragmentManager.beginTransaction().replace(R.id.recommend_frame, fragment).commit();
+        }else if (id == R.id.fav) {
 
         } else if (id == R.id.nav_profile) {
 //            Fragment fragment = new SearchFragment();

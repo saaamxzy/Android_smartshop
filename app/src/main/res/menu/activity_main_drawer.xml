@@ -2,10 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/login"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Log In" />
+
         <item
             android:id="@+id/search"
             android:icon="@drawable/ic_menu_gallery"
@@ -14,10 +11,7 @@
             android:id="@+id/recommendations"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="Recommendations" />
-        <item
-            android:id="@+id/settings"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Settings" />
+
     </group>
 
     <item android:title="My Profile">
