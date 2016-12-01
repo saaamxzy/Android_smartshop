@@ -46,7 +46,8 @@ import static com.group3.smartshop.MapsActivity.YELP_TOKEN;
 
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, SearchFragment.OnFragmentInteractionListener{
+        implements NavigationView.OnNavigationItemSelectedListener,
+        SearchFragment.OnFragmentInteractionListener{
 
 
     private DrawerLayout mDrawer;
@@ -59,14 +60,6 @@ public class MainActivity extends AppCompatActivity
 
     public final static String EXTRA_MESSAGE = "group3.CSE110smartshop.MESSAGE";
 
-
-//    private ArrayList<Business> getRecommendations(List<Business> businesses, int num) {
-//        ArrayList<Business> recommendations = new ArrayList<>(num);
-//        for (int i = 0; i < num; ++i) {
-//            recommendations.add(businesses.get(i));
-//        }
-//        return recommendations;
-//    }
 
     @Override
     public void onFragmentInteraction(Uri uri){
@@ -83,17 +76,6 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
-
-        /*
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        */
 
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -161,29 +143,8 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
 
 
-
-        return super.onOptionsItemSelected(item);
-    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -196,20 +157,16 @@ public class MainActivity extends AppCompatActivity
             FragmentManager fragmentManager = getFragmentManager();
             fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
         } else if (id == R.id.recommendations) {
-//            Fragment fragment = new SearchFragment();
-//            FragmentManager fragmentManager = getFragmentManager();
-//            fragmentManager.beginTransaction().replace(R.id.recommend_frame, fragment).commit();
+            Intent intent = new Intent (this, Recommendation.class);
+            startActivity(intent);
         }else if (id == R.id.nav_profile) {
-//            Fragment fragment = new SearchFragment();
-//            FragmentManager fragmentManager = getFragmentManager();
-//            fragmentManager.beginTransaction().replace(R.id.nav_profile, fragment).commit();
+            Intent intent = new Intent (this, myProfileActivity.class);
+            startActivity(intent);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
-
 
 }

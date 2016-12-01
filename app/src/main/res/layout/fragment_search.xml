@@ -21,16 +21,7 @@
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true" />
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/menu"
-            android:onClick="profileButton"
-            android:id="@+id/profile_test"
-            android:layout_alignParentBottom="true"
-            android:layout_alignLeft="@+id/edit_message"
-            android:layout_alignStart="@+id/edit_message"
-            android:layout_marginBottom="81dp" />
+
 
         <Button
             android:layout_width="wrap_content"
@@ -55,20 +46,6 @@
             android:layout_below="@+id/edit_message"
             android:layout_alignRight="@+id/edit_message"
             android:layout_alignEnd="@+id/edit_message" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="RECOMMENDATION"
-            android:onClick="recButton"
-            android:id="@+id/rec_test"
-            android:layout_alignBaseline="@+id/profile_test"
-            android:layout_alignBottom="@+id/profile_test"
-            android:layout_toRightOf="@+id/profile_test"
-            android:layout_toEndOf="@+id/profile_test"
-            android:layout_marginLeft="18dp"
-            android:layout_marginStart="18dp" />
-
 
     </RelativeLayout>
 

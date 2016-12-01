@@ -99,12 +99,6 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
             }
         });
 
-        holder.favButton.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                showMenu(holder.favButton);
-            }
-        });
     }
 
     @Override
@@ -112,27 +106,5 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.MyViewHo
         return productList.size();
     }
 
-    private void showMenu(View view){
-        PopupMenu menu = new PopupMenu(myContext, view);
-        MenuInflater inf = menu.getMenuInflater();
-        inf.inflate(R.menu.menu_product, menu.getMenu());
-        menu.setOnMenuItemClickListener(new MenuClickListener());
-        menu.show();
-    }
 
-    class MenuClickListener implements  PopupMenu.OnMenuItemClickListener{
-
-        public MenuClickListener(){}
-
-        @Override
-        public boolean onMenuItemClick (MenuItem menuItem){
-            switch (menuItem.getItemId()) {
-                case R.id.add_favourite:
-                    Toast.makeText(myContext, "Add to favorite", Toast.LENGTH_SHORT).show();
-                    return true;
-                default:
-            }
-            return false;
-        }
-    }
 }

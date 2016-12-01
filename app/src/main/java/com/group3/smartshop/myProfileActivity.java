@@ -57,22 +57,6 @@ public class myProfileActivity extends AppCompatActivity {
             }
         };
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.test_fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-//                if (user.getDisplayName() != null) {
-                Snackbar.make(view, "Current logged in as: " + user.getDisplayName(),
-                            Snackbar.LENGTH_LONG)
-                            .setAction("Action", null).show();
-//                }else{
-//                    Snackbar.make(view, "Current logged in as: Guest",
-//                            Snackbar.LENGTH_LONG)
-//                            .setAction("Action", null).show();
-//                }
-            }
-        });
-
         // profile page button connection
         btnChangeName = (Button) findViewById(R.id.change_name_button);
         btnChangeEmail = (Button) findViewById(R.id.change_email_button);
