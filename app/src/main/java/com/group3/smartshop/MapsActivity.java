@@ -1,10 +1,13 @@
 package com.group3.smartshop;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
@@ -146,9 +149,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     private double mLat, mLgn;
+    private boolean isRealLocation;
     private TextView mLatitudeText,mLongitudeText;
     private List<Business> businesses;
     private HashMap<Marker, MarkerInfo> markerImages;
+    private static final String NOT_REAL_PHONE = "You are seeing this message because your" +
+            " phone's location service is not working. You are probably running this program " +
+            "on an emulator. You are going to see the results near a default location set.";
 
 
 
@@ -191,9 +198,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
 
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
+                // Show an explanation to the user
 
             } else {
 
@@ -234,9 +239,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     mGoogleApiClient);
             if (mLastLocation != null) {
                 System.out.println("my location is grabbed");
+
                 //mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
                 //mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
-
+                isRealLocation = true;
                 mLat = mLastLocation.getLatitude();
                 mLgn = mLastLocation.getLongitude();
                 SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -244,6 +250,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 mapFragment.getMapAsync(this);
             } else if (mLastLocation == null){
                 System.out.println("my location is null");
+                isRealLocation = false;
+                new AlertDialog.Builder(this)
+                        .setTitle("Your location service is disabled")
+                        .setMessage(NOT_REAL_PHONE)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // continue with ok
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
+                // hard coded because the emulator is not cooperating
+                // This part of code sets the default location to the very base of our group.
+                // If you do not want to see what is around our base, please use an actual phone.
+
                 mLat = 32.8673;
                 mLgn = -117.209;
                 SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -278,7 +299,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        System.out.println("my location in onMapReady:*** " + mLat + ", " + mLgn);
+        //System.out.println("my location in onMapReady:*** " + mLat + ", " + mLgn);
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.setInfoWindowAdapter(new SmartInfoWindowAdapter());
@@ -295,9 +316,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 == PackageManager.PERMISSION_GRANTED) {
             mMap.setMyLocationEnabled(true);
         } else {
+            Snackbar snackbar = Snackbar
+                    .make(findViewById(R.id.maps_activity),
+                            "Permission denied, please enable location service!",
+                            Snackbar.LENGTH_LONG);
+
+            snackbar.show();
             // Show rationale and request permission.
         }
 
+        // special gson parser to parse data whose names are with underscore
         Gson gson = new GsonBuilder()
                 .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
                 .create();
@@ -306,6 +334,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
 
+        // make the API call and gather business information
         YelpApiEndPointInterface apiService = retrofit.create(YelpApiEndPointInterface.class);
         Call<YelpParser> call =
                 apiService.getBusinesses(YELP_TOKEN, search_term, mLat, mLgn);
@@ -313,12 +342,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onResponse(Call<YelpParser> call, Response<YelpParser> response) {
                 if (response.body() == null) {
-                    System.out.println("body is null");
+                    Snackbar snackbar = Snackbar
+                            .make(findViewById(R.id.maps_activity),
+                                    "Connection error. Please try again!",
+                                    Snackbar.LENGTH_LONG);
+
+                    snackbar.show();
                 }
                 businesses = response.body().getBusinesses();
 
                 if (businesses.size() == 0) {
-                    System.out.println("no matching result nearby!!!");
+                    Snackbar snackbar = Snackbar
+                            .make(findViewById(R.id.maps_activity), "No matching result found!",
+                                    Snackbar.LENGTH_LONG);
+                    snackbar.show();
                 }
 
                 for (int i = 0; i < businesses.size(); i++) {
@@ -368,13 +405,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode,
+                                           String[] permissions,
+                                           int[] grantResults) {
         if (requestCode == PERMISSIONS_REQUEST_FINE_LOCATION) {
             if (permissions.length == 1 &&
                     permissions[0] == Manifest.permission.ACCESS_FINE_LOCATION &&
                     grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             } else {
-                // Permission was denied. Display an error message.
+                Snackbar snackbar = Snackbar
+                        .make(findViewById(R.id.maps_activity),
+                                "Permission denied! Please enable location service!",
+                                Snackbar.LENGTH_LONG);
+                snackbar.show();
             }
         }
 
