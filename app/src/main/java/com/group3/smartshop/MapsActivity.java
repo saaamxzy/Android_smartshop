@@ -1,11 +1,13 @@
 package com.group3.smartshop;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -14,6 +16,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -316,10 +319,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     System.out.println("body is null");
                 }
                 businesses = response.body().getBusinesses();
-                System.out.println("grabbing info ****************");
+
                 if (businesses.size() == 0) {
                     System.out.println("no matching result nearby!!!");
-
                 }
 
                 for (int i = 0; i < businesses.size(); i++) {
