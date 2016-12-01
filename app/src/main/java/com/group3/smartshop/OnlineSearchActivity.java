@@ -34,13 +34,17 @@ import java.util.PriorityQueue;
 import android.content.res.Resources;
 
 public class OnlineSearchActivity extends AppCompatActivity {
+    //store Extra message
     protected static final String EXTRA_MESSAGE = "";
     private String message;
+
+    //store amazon info
     private ArrayList<String> list = new ArrayList<String>();
     private ArrayList<String> names = new ArrayList<String>();
     private ArrayList<String> pics = new ArrayList<String>();
     private ArrayList<String> links = new ArrayList<String>();
 
+    //store ebay info
     private ArrayList<String> ebayNames = new ArrayList<String>();
     private ArrayList<String> ebayPics = new ArrayList<String>();
     private ArrayList<String> ebayLinks = new ArrayList<String>();
@@ -191,7 +195,8 @@ public class OnlineSearchActivity extends AppCompatActivity {
                     Element resultForLink = i.clone();
                     String word = i.text();
                     int index = word.indexOf('$');
-                    //when product has price
+
+                    //when product has price, it is a product we are looking for. Get it.
                     if (index != -1) {
                         list.add(word);
                         Elements name = resultForName.select("h2");
@@ -208,21 +213,11 @@ public class OnlineSearchActivity extends AppCompatActivity {
                         pics.add(finalPic.first().attr("src"));
 
                         Elements link = resultForLink.select("a[class^=a-link-normal a-text-normal]");
+
                         //Elements finalLink = link.select("href");
                         links.add(link.first().attr("href"));
                     }
                 }
-/*
-                for (Element i : result.select("img")) {
-                    String p = i.attr("src");
-                    System.out.println("all: " + p);
-                    if (p.contains("_AC_")) {
-                        pics.add(p);
-                        System.out.println("true");
-                    }else{
-                        continue;
-                    }
-                }*/
             }catch(Exception e){e.printStackTrace();}
 
 
@@ -230,6 +225,8 @@ public class OnlineSearchActivity extends AppCompatActivity {
             try {
                 Document doc = Jsoup.connect(ebayWebsite).get();
                 Elements result = doc.select("li[id^=item]");
+
+                //loop through all results
                 for(Element i: result) {
                     Element resultForNameAndPic = i.clone();
                     Element resultForLink = i.clone();
@@ -237,7 +234,7 @@ public class OnlineSearchActivity extends AppCompatActivity {
                     Element resultForBIN = i.clone();
 
                     Elements name = resultForNameAndPic.select("img");
-                    //ebayNames.add(name.select("img src").first().attr("alt"));
+
 
                     //get name and pic
                     for(Element j: name)
@@ -259,6 +256,8 @@ public class OnlineSearchActivity extends AppCompatActivity {
                     //get price
                     Elements lvprice = resultForlvprice.select("li[class^=lvprice]");
                     Elements BIN = resultForBIN.select("div[class^=bin]");
+
+                    //two different format
                     if(!lvprice.isEmpty())
                     {
                         String range = lvprice.text();
@@ -301,16 +300,6 @@ public class OnlineSearchActivity extends AppCompatActivity {
                     {
                         ebayPrice.add(0.0);
                     }
-
-
-                    /*
-                        Elements pic = resultForPic.select("a[class^=a-link-normal a-text-normal]");
-                        Elements finalPic = pic.select("img");
-                        pics.add(finalPic.first().attr("src"));
-
-                        Elements link = resultForLink.select("a[class^=a-link-normal a-text-normal]");
-                        //Elements finalLink = link.select("href");
-                        links.add(link.first().attr("href"));*/
                 }
             }catch(Exception e){e.printStackTrace();}
 
@@ -349,7 +338,6 @@ public class OnlineSearchActivity extends AppCompatActivity {
                 Product pro = new Product(names.get(i), price, pics.get(i),links.get(i), "Amazon");
 
                 sortList.add(pro);
-                //productList.add(pro);
             }
 
             //add ebay product to product obj
@@ -357,7 +345,6 @@ public class OnlineSearchActivity extends AppCompatActivity {
             {
                 Product pro = new Product(ebayNames.get(i), ebayPrice.get(i), ebayPics.get(i),ebayLinks.get(i), "Ebay");
                 sortList.add(pro);
-                //productList.add(pro);
             }
 
             //add sorted list to product list
@@ -374,20 +361,5 @@ public class OnlineSearchActivity extends AppCompatActivity {
             });
             return null;
         }
-
-
-//        @Override
-//        protected void onPostExecute(Void aVoid){
-//            LinearLayout screen = (LinearLayout)findViewById(R.id.main_search_onlilne);
-//            screen.setOrientation(LinearLayout.VERTICAL);
-//            super.onPostExecute(aVoid);
-//            for(int i = 0; i<list.size(); i++)
-//            {
-//                TextView newView = new TextView(OnlineSearchActivity.this);
-//                newView.setText(list.get(i));
-//                screen.addView(newView);
-//            }
-//
-//        }
     }
 }
