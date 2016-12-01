@@ -84,6 +84,7 @@ public class MainActivity extends AppCompatActivity
         toolbar = (Toolbar) findViewById(R.id.toolbar_main);
         setSupportActionBar(toolbar);
 
+        /*
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,6 +93,7 @@ public class MainActivity extends AppCompatActivity
                         .setAction("Action", null).show();
             }
         });
+        */
 
         mDrawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -111,44 +113,6 @@ public class MainActivity extends AppCompatActivity
         name.setText(user.getDisplayName());
         email.setText(user.getEmail());
 
-//        //Get recommendations nearby
-//
-//        LatLng myLl = new LatLng(32.8673,-117.209);
-//
-//        Gson gson = new GsonBuilder()
-//                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-//                .create();
-//        Retrofit retrofit = new Retrofit.Builder()
-//                .baseUrl(BASE_URL)
-//                .addConverterFactory(GsonConverterFactory.create(gson))
-//                .build();
-//        YelpApiEndPointInterface apiService = retrofit.create(YelpApiEndPointInterface.class);
-//        Call<YelpParser> call =
-//                apiService.getBusinesses(YELP_TOKEN, "shop", 32.8672972, -117.209346);
-//        call.enqueue(new Callback<YelpParser>() {
-//            @Override
-//            public void onResponse(Call<YelpParser> call, Response<YelpParser> response) {
-//                if (response.body() == null) {
-//                    System.out.println("body is null");
-//                }
-//                businesses = response.body().getBusinesses();
-//                Collections.sort(businesses, new BusinessComparator());
-//                Collections.reverse(businesses);
-//                recommendations = getRecommendations(businesses, 4);
-//
-//
-//                for (Business b : recommendations) {
-//                    System.out.println(b.getName());
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<YelpParser> call, Throwable t) {
-//                System.out.println("businesses not grabbed");
-//                System.out.println(t.toString());
-//            }
-//
-//        });
 
     }
 
@@ -216,12 +180,7 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
 
-//        // The action bar home/up action should open or close the drawer.
-//        switch (item.getItemId()) {
-//            case android.R.id.home:
-//                mDrawer.openDrawer(GravityCompat.START);
-//                return true;
-//        }
+
 
         return super.onOptionsItemSelected(item);
     }
@@ -250,53 +209,6 @@ public class MainActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-//
-//    private void setupDrawerContent(NavigationView navigationView) {
-//        navigationView.setNavigationItemSelectedListener(
-//                new NavigationView.OnNavigationItemSelectedListener() {
-//                    @Override
-//                    public boolean onNavigationItemSelected(MenuItem menuItem) {
-//                        selectDrawerItem(menuItem);
-//                        return true;
-//                    }
-//                });
-//    }
-//
-//    public void selectDrawerItem(MenuItem menuItem) {
-//        // Create a new fragment and specify the fragment to show based on nav item clicked
-//        Fragment fragment = null;
-//        Class fragmentClass;
-//        switch(menuItem.getItemId()) {
-//            case R.id.login:
-//                fragmentClass = GPlusFragment.class;
-//                break;
-////            case R.id.home:
-////                fragmentClass = SecondFragment.class;
-////                break;
-////            case R.id.nav_third_fragment:
-////                fragmentClass = ThirdFragment.class;
-////                break;
-//            default:
-//                fragmentClass = GPlusFragment.class;
-//        }
-//
-//        try {
-//            fragment = (Fragment) fragmentClass.newInstance();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        // Insert the fragment by replacing any existing fragment
-//        FragmentManager fragmentManager = getFragmentManager();
-//        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit();
-//
-//        // Highlight the selected item has been done by NavigationView
-//        menuItem.setChecked(true);
-//        // Set action bar title
-//        setTitle(menuItem.getTitle());
-//        // Close the navigation drawer
-//        mDrawer.closeDrawers();
-//    }
 
 
 

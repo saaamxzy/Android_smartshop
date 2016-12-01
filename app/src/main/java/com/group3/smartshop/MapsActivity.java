@@ -7,6 +7,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -277,7 +278,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        System.out.println("my location in onMapReady: " + mLat + ", " + mLgn);
+        System.out.println("my location in onMapReady:*** " + mLat + ", " + mLgn);
         mMap = googleMap;
         mMap.getUiSettings().setZoomControlsEnabled(true);
         mMap.setInfoWindowAdapter(new SmartInfoWindowAdapter());
@@ -315,6 +316,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     System.out.println("body is null");
                 }
                 businesses = response.body().getBusinesses();
+                System.out.println("grabbing info ****************");
+                if (businesses.size() == 0) {
+                    System.out.println("no matching result nearby!!!");
+
+                }
 
                 for (int i = 0; i < businesses.size(); i++) {
                     LatLng ll = new LatLng(businesses.get(i).getCoordinates().getLatitude(),
