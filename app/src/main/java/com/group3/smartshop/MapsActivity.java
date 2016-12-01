@@ -157,6 +157,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             " phone's location service is not working. You are probably running this program " +
             "on an emulator. You are going to see the results near a default location set.";
 
+    private static final String PERMISSION_DENIED_STRING = "Location service is disabled. PLease" +
+            " enable location service to get real-time search results.";
+    private static final String ENABLE_LOCATION_SERVICE = "To get shops near you, enable the " +
+            "location service of your phone.";
 
 
 
@@ -198,6 +202,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
 
+                new AlertDialog.Builder(this)
+                        .setTitle("Enable location services?")
+                        .setMessage(ENABLE_LOCATION_SERVICE)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                // continue with ok
+                            }
+                        })
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .show();
                 // Show an explanation to the user
 
             } else {
@@ -273,6 +287,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         } else {
             // Show rationale and request permission.
+            new AlertDialog.Builder(this)
+                    .setTitle("Your location service is disabled")
+                    .setMessage(PERMISSION_DENIED_STRING)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            // continue with ok
+                        }
+                    })
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
         }
 
     }
@@ -284,7 +308,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult){
+        Snackbar snackbar = Snackbar
+                .make(findViewById(R.id.maps_activity),
+                        "Connection failed. Please check your network!",
+                        Snackbar.LENGTH_LONG);
 
+        snackbar.show();
     }
 
 
@@ -322,7 +351,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             Snackbar.LENGTH_LONG);
 
             snackbar.show();
-            // Show rationale and request permission.
+            // Show error message
         }
 
         // special gson parser to parse data whose names are with underscore
@@ -396,6 +425,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onFailure(Call<YelpParser> call, Throwable t) {
                 System.out.println("businesses not grabbed");
                 System.out.println(t.toString());
+
             }
 
         });
